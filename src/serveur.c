@@ -119,20 +119,16 @@ int recois_envoie_message(int client_socket_fd)
   {
     renvoie_message(client_socket_fd, data);
   }
-<<<<<<< HEAD
   // Si le message commence par le mot: 'calcule:'
   else if (strcmp(code, "calcule:") == 0)
   {
     renvoie_message(client_socket_fd, data);
   }
-  else
-=======
-  if (strcmp(code, "nom:") == 0)
+  else if (strcmp(code, "nom:") == 0)
   {
     renvoie_nom(client_socket_fd, data);
   }
-  if (strcmp(code, "image:") == 0)
->>>>>>> 8679e563e3a39882ca366c476ecd491a36f3a29a
+  else if (strcmp(code, "image:") == 0)
   {
     plot(data);
   }
