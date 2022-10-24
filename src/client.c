@@ -152,11 +152,8 @@ char* definie_entete(char data[])
 {
   if (data[0] == '+' || data[0] == '-')
   {
-    char tmp[1023];
-    strcpy(tmp, data);
-
     char* str;
-    int number1 = (int) strtof(&tmp[1], &str);
+    int number1 = (int) strtof(&data[1], &str);
     int number2 = (int) strtof(str, NULL);
 
     if (number1 && number2)

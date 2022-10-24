@@ -20,5 +20,6 @@
  * en retour
  */
 int recois_envoie_message(int client_socket_fd);
+char* calcule(char data[]);
 
 #endif
