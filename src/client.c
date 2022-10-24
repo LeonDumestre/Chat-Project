@@ -29,8 +29,7 @@ int envoie_nom_client(int socketfd)
 
   // Demandez à l'utilisateur d'entrer un message
   char nom[25];
-  printf("Votre nom (max 20 caracteres): ");
-  fgets(nom, sizeof(nom), stdin);
+  gethostname(nom, 25);
   strcpy(data, "nom: ");
   strcat(data, nom);
 

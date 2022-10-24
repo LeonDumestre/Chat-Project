@@ -127,7 +127,7 @@ int recois_envoie_message(int client_socket_fd)
   {
     plot(data);
   }
-  
+
   return (EXIT_SUCCESS);
 }
 
@@ -184,7 +184,7 @@ int main()
   while (1)
   {
     // Lire et répondre au client
-    recois_envoie_message(socketfd, client_socket_fd);
+    recois_envoie_message(client_socket_fd);
   }
 
   return 0;
