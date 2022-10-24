@@ -22,6 +22,41 @@
 #include "client.h"
 #include "bmp.h"
 
+int envoie_nom_client(int socketfd)
+{
+  char data[25];
+  // la réinitialisation de l'ensemble des données
+  memset(data, 0, sizeof(data));
+
+  // Demandez à l'utilisateur d'entrer un message
+  char nom[25];
+  gethostname(nom, 25);
+  strcpy(data, "nom: ");
+  strcat(data, nom);
+
+  int write_status = write(socketfd, data, strlen(data));
+  if (write_status < 0)
+  {
+    perror("erreur ecriture");
+    exit(EXIT_FAILURE);
+  }
+
+  // la réinitialisation de l'ensemble des données
+  memset(data, 0, sizeof(data));
+
+  // lire les données de la socket
+  int read_status = read(socketfd, data, sizeof(data));
+  if (read_status < 0)
+  {
+    perror("erreur lecture");
+    return -1;
+  }
+
+  printf("Nom recu: %s\n", data);
+
+  return 0;
+}
+
 /*
  * Fonction d'envoi et de réception de messages
  * Il faut un argument : l'identifiant de la socket
@@ -59,6 +94,8 @@ int envoie_recois_message(int socketfd)
   }
 
   printf("Message recu: %s\n", data);
+
+  envoie_recois_message(socketfd);
 
   return 0;
 }
@@ -171,6 +208,8 @@ int main(int argc, char **argv)
   }
   if (argc != 2)
   {
+    // envoyer et recevoir un nom
+    envoie_nom_client(socketfd);
     // envoyer et recevoir un message
     envoie_recois_message(socketfd);
   }
