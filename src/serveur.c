@@ -157,7 +157,7 @@ char* calcule(char data[])
     break;
   }
 
-  char* final = malloc(100);
+  char* final = malloc(sizeof(char) * 200);
   strcat(final, "calcule: ");
   sprintf(tmp, "%f", res);
   strcat(final, tmp);
