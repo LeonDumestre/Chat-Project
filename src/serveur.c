@@ -123,7 +123,7 @@ int recois_envoie_message(int client_socket_fd)
   {
     renvoie_nom(client_socket_fd, data);
   }
-  else
+  if (strcmp(code, "image:") == 0)
   {
     plot(data);
   }
