@@ -152,19 +152,15 @@ char* definie_entete(char data[])
 {
   if (data[0] == '+' || data[0] == '-')
   {
-    char* tmp;
+    char tmp[1023];
     strcpy(tmp, data);
-    printf("tmp: %s\n", tmp);
 
-    memmove(tmp, tmp+2, strlen(tmp));
-    printf("data: %s\n", data);
-    
-    char* number1 = strtok_r(tmp, " ", &tmp);
-    char* number2 = strtok_r(tmp, " ", &tmp);
-    printf("Before");
-    if (isdigit(number1) && isdigit(number2))
+    char* str;
+    int number1 = (int) strtof(&tmp[1], &str);
+    int number2 = (int) strtof(str, NULL);
+
+    if (number1 && number2)
     {
-      printf("Digit");
       return "calcule: ";
     }
   }
