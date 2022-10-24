@@ -120,6 +120,11 @@ int recois_envoie_message(int socketfd)
   {
     renvoie_message(client_socket_fd, data);
   }
+  // Si le message commence par le mot: 'calcule:'
+  else if (strcmp(code, "calcule:") == 0)
+  {
+    renvoie_message(client_socket_fd, data);
+  }
   else
   {
     plot(data);

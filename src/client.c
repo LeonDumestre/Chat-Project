@@ -17,6 +17,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <ctype.h>
 
 #include "client.h"
 #include "bmp.h"
@@ -28,7 +29,6 @@
 
 int envoie_recois_message(int socketfd)
 {
-
   char data[1024];
   // la réinitialisation de l'ensemble des données
   memset(data, 0, sizeof(data));
@@ -37,7 +37,7 @@ int envoie_recois_message(int socketfd)
   char message[1024];
   printf("Votre message (max 1000 caracteres): ");
   fgets(message, sizeof(message), stdin);
-  strcpy(data, "message: ");
+  strcpy(data, definie_entete(message));
   strcat(data, message);
 
   int write_status = write(socketfd, data, strlen(data));
@@ -111,17 +111,40 @@ int envoie_couleurs(int socketfd, char *pathname)
   return 0;
 }
 
+char* definie_entete(char data[])
+{
+  if (data[0] == '+' || data[0] == '-')
+  {
+    char* tmp;
+    strcpy(tmp, data);
+    printf("tmp: %s\n", tmp);
+
+    memmove(tmp, tmp+2, strlen(tmp));
+    printf("data: %s\n", data);
+    
+    char* number1 = strtok_r(tmp, " ", &tmp);
+    char* number2 = strtok_r(tmp, " ", &tmp);
+    printf("Before");
+    if (isdigit(number1) && isdigit(number2))
+    {
+      printf("Digit");
+      return "calcule: ";
+    }
+  }
+  return "message: ";
+}
+
 int main(int argc, char **argv)
 {
   int socketfd;
 
   struct sockaddr_in server_addr;
 
-  if (argc < 2)
-  {
-    printf("usage: ./client chemin_bmp_image\n");
-    return (EXIT_FAILURE);
-  }
+  // if (argc < 2)
+  // {
+  //   printf("usage: ./client chemin_bmp_image\n");
+  //   return (EXIT_FAILURE);
+  // }
 
   /*
    * Creation d'une socket
