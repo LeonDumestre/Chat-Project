@@ -90,46 +90,6 @@ void analyse(char *pathname, char *data)
   data[strlen(data) - 1] = '\0';
 }
 
-char *definie_entete(char message[])
-{
-  char* message_type = malloc(sizeof(char) * 1024);
-
-  if (message[0] == '/' && message[2] == ' ')
-  {
-    switch (message[1])
-    {
-      case 'm':
-        strcpy(message_type, "message: ");
-        break;
-      case 'n':
-        char op;
-        int N1, N2;
-        int conv = sscanf(data, "%c %d %d", &op, &N1, &N2);
-
-        if (conv == 3 && (op == '+' || op == '-'))
-        {
-          strcpy(message_type, "calcule: ");
-        }
-        else
-        {
-          strcpy(message_type, "message: ");
-        }
-        break;
-      case 'c':
-        strcpy(message_type, "couleurs: ");
-        break;
-      case 'b':
-        strcpy(message_type, "balise: ");
-        break;
-    }
-  }
-  else
-  {
-    strcpy(message_type, "message: ");
-  }
-  return message_type;
-}
-
 int envoie_nom_client(int socketfd)
 {
   char data[25];

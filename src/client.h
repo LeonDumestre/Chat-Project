@@ -36,6 +36,8 @@ char *definie_entete(char data[]);
 
 void analyse(char *pathname, char *data);
 
+void writeJSON(char message_type[], char message[]);
+
 int envoie_nom_client(int socketfd);
 
 int envoie_couleurs(int socketfd, char *pathname);
@@ -45,7 +47,5 @@ int envoie_couleurs(int socketfd, char *pathname);
  * Il faut un argument : l'identifiant de la socket
  */
 int envoie_recois_message(int socketfd);
-char* definie_entete(char data[]);
-void writeJSON(char message_type[], char message[]);
 
 #endif
