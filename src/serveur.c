@@ -62,17 +62,6 @@ void plot(char *data)
   pclose(p);
 }
 
-int renvoie_nom(int client_socket_fd, char *data){
-  int data_size = write(client_socket_fd, (void *)data, strlen(data));
-
-  if (data_size < 0)
-  {
-    perror("erreur ecriture");
-    return (EXIT_FAILURE);
-  }
-  return (EXIT_SUCCESS);
-}
-
 /* renvoyer un message (*data) au client (client_socket_fd) */
 int renvoie_message(int client_socket_fd, char *data)
 {
@@ -126,7 +115,7 @@ int recois_envoie_message(int client_socket_fd)
   }
   else if (strcmp(code, "nom:") == 0)
   {
-    renvoie_nom(client_socket_fd, data);
+    renvoie_message(client_socket_fd, data);
   }
   else if (strcmp(code, "image:") == 0)
   {
