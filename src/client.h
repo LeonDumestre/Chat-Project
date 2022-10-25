@@ -24,5 +24,6 @@
  */
 int envoie_recois_message(int socketfd);
 char* definie_entete(char data[]);
+void writeJSON(char message_type[], char message[]);
 
 #endif
