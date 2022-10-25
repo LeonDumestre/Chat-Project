@@ -68,7 +68,7 @@ void enregistre_data(char *data, char *pathname)
 int renvoie_message(int client_socket_fd, char *data)
 {
   int data_size = write(client_socket_fd, (void *)data, strlen(data));
-
+  free(data);
   if (data_size < 0)
   {
     perror("erreur ecriture");
@@ -100,17 +100,21 @@ int recois_envoie_message(int client_socket_fd)
   printf("Message recu: %s\n", data);
   char* message_type = getCode(data);
 
-  // Si le message commence par le mot: 'message:'
-  if (strcmp(message_type, "message") == 0 || strcmp(message_type, "nom") == 0)
+  if (strcmp(message_type, "message") == 0)
   {
-    renvoie_message(client_socket_fd, writeJSON(message_type, getValeurs(data)));
+    char* valeurs = getValeurs(data);
+    char* final = writeJSON(message_type, valeurs);
+    renvoie_message(client_socket_fd, final);
+    free(valeurs);
   }
 
-  // Si le message commence par le mot: 'calcule:'
   else if (strcmp(message_type, "calcule") == 0)
   {
-    char* res = calcule(data);
-    renvoie_message(client_socket_fd, res);
+    char* valeurs = getValeurs(data);
+    char* res = calcule(valeurs);
+    char* final = writeJSON(message_type, res);
+    renvoie_message(client_socket_fd, final);
+    free(valeurs);
     free(res);
   }
 
@@ -137,11 +141,9 @@ int recois_envoie_message(int client_socket_fd)
 
 char* calcule(char data[])
 {
-  memmove(data, data+9, strlen(data));
-
   char op;
   int N1, N2;
-  sscanf(data, "%c %d %d", &op, &N1, &N2);
+  sscanf(data, "%c,%d,%d", &op, &N1, &N2);
 
   float res = 0.0;
   switch (op)
@@ -154,15 +156,11 @@ char* calcule(char data[])
     break;
   }
 
-  char* strRes = malloc(sizeof(char) * 200);
-  char* final = malloc(sizeof(char) * 200);
+  printf("Res: %f\n", res);
 
-  strcat(final, "calcule: ");
+  char* strRes = malloc(sizeof(char) * 200);
   sprintf(strRes, "%f", res);
-  strcat(final, strRes);
-  free(strRes);
-  
-  return final;
+  return strRes;
 }
 
 

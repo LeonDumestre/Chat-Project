@@ -9,7 +9,6 @@
 
 char* writeJSON(char message_type[], char message[])
 {
-  printf("Message: %s\n", message);
   char* json = malloc(sizeof(char) * 2048);
 
   strcpy(json, "{\"code\":\"");
@@ -35,6 +34,7 @@ char* writeJSON(char message_type[], char message[])
       strcat(json, "\"");
       char* pOp = &op;
       strcat(json, pOp);
+      json[strlen(json)-1] = '\0';
       strcat(json, "\",");
 
       sprintf(tmp, "%d", N1);
@@ -117,10 +117,12 @@ char* getValeurs(char json[])
   {
     if (isValeurs)
     {
-      if (str[ind] == ']') {
-        break;
+      if (str[ind] == ']') break;
+      if (str[ind] == '"') 
+      {
+        ind++;
+        continue;
       }
-
       valeurs[indValeurs] = str[ind];
       indValeurs++;
     }
