@@ -43,58 +43,21 @@ void analyse(char *pathname, char *data)
   data[strlen(data) - 1] = '\0';
 }
 
-void writeJSON(char message_type[], char message[])
-{
-  char json[2048] = "{\"code\":\"";
-
-  strcat(json, message_type);
-  strcat(json, "\",\"valeurs\":[\"");
-
-  if (strcmp(message_type, "message"))
-  {
-    strcat(json, message);
-  }
-  else if (strcmp(message_type, "calcule"))
-  {
-    char op;
-    int N1, N2;
-    int conv = sscanf(data, "%c %d %d", &op, &N1, &N2);
-    if (op == '+' || op == '-')
-    {
-      strcat(json, "\"");
-      strcat(json, op);
-      strcat(json, ",");
-      strcat(json, N1);
-      strcat(json, ",");
-      strcat(json, N2);
-    }
-  }
-  else if (strcmp(message_type, "couleurs"))
-  {
-    strcat(json, message);
-  }
-  else if (strcmp(message_type, "balises"))
-  {
-    strcat(json, message);
-  }
-
-  strcat(json, "\"]}");
-
-  printf("Json: %s\n", json);
-  // return json;
-
 char *definie_entete(char message[])
 {
   char* message_type = malloc(sizeof(char) * 1024);
 
   if (message[0] == '/' && message[2] == ' ')
   {
-    switch (message[1])
+    char letter = message[1];
+    memmove(message, message + 3, strlen(message));
+    switch (letter)
     {
       case 'm':
         strcpy(message_type, "message: ");
         break;
-      case 'n':
+
+      case 'n':;
         char op;
         int N1, N2;
         int conv = sscanf(message, "%c %d %d", &op, &N1, &N2);
@@ -108,11 +71,13 @@ char *definie_entete(char message[])
           strcpy(message_type, "message: ");
         }
         break;
+
       case 'c':
         strcpy(message_type, "couleurs: ");
         break;
+
       case 'b':
-        strcpy(message_type, "balise: ");
+        strcpy(message_type, "balises: ");
         break;
     }
   }
@@ -184,7 +149,7 @@ int envoie_recois_message(int socketfd)
   memset(data, 0, sizeof(data));
 
   // Demandez à l'utilisateur d'entrer un message
-  char* message = malloc(sizeof(char) * 2048);
+  char message[1024];
 
   printf("Votre message (max 1000 caracteres): ");
   fgets(message, sizeof(message), stdin);
@@ -195,7 +160,6 @@ int envoie_recois_message(int socketfd)
   strcat(data, message);
 
   free(message_type);
-  free(message);
 
   int write_status = write(socketfd, data, strlen(data));
   if (write_status < 0)

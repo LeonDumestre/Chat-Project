@@ -36,8 +36,6 @@ char *definie_entete(char message[]);
 
 void analyse(char *pathname, char *data);
 
-void writeJSON(char message_type[], char message[]);
-
 int envoie_nom_client(int socketfd);
 
 int envoie_couleurs(int socketfd, char *pathname);

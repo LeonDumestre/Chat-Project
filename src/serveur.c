@@ -83,7 +83,7 @@ int renvoie_message(int client_socket_fd, char *data)
  */
 int recois_envoie_message(int client_socket_fd)
 {
-  char data[1024];
+  char data[2048];
 
   // la réinitialisation de l'ensemble des données
   memset(data, 0, sizeof(data));
@@ -126,9 +126,9 @@ int recois_envoie_message(int client_socket_fd)
     enregistre_data(data, "couleurs.txt");
     renvoie_message(client_socket_fd, data);
   }
-  else if (strcmp(message_type, "balise:") == 0)
+  else if (strcmp(message_type, "balises:") == 0)
   {
-    enregistre_data(data, "balise.txt");
+    enregistre_data(data, "balises.txt");
     renvoie_message(client_socket_fd, data);
   }
   else if (strcmp(message_type, "image:") == 0)

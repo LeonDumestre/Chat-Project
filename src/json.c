@@ -19,7 +19,7 @@ void writeJSON(char message_type[], char message[]) {
   {
     char op;
     int N1, N2;
-    int conv = sscanf(data, "%c %d %d", &op, &N1, &N2);
+    int conv = sscanf(message, "%c %d %d", &op, &N1, &N2);
     if (op == '+' || op == '-')
     {
       char* tmp = malloc(sizeof(char)*200);
@@ -28,11 +28,11 @@ void writeJSON(char message_type[], char message[]) {
       strcat(json, op);
       strcat(json, ",");
 
-      sprintf(tmp, "%f", N1);
+      sprintf(tmp, "%d", N1);
       strcat(json, tmp);
       strcat(json, ",");
 
-      sprintf(tmp, "%f", N2);
+      sprintf(tmp, "%d", N2);
       strcat(json, tmp);
 
       free(tmp);
