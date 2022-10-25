@@ -10,20 +10,10 @@
  * de traiter ces messages et de répondre aux clients.
  */
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/epoll.h>
-#include <netinet/in.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
 #include "serveur.h"
 
 void plot(char *data)
 {
-
   // Extraire le compteur et les couleurs RGB
   FILE *p = popen("gnuplot -persist", "w");
   printf("Plot\n");
@@ -60,6 +50,32 @@ void plot(char *data)
   fprintf(p, "e\n");
   printf("Plot: FIN\n");
   pclose(p);
+}
+
+char* calcule(char data[])
+{
+  memmove(data, data+9, strlen(data));
+
+  char* tmp;
+  float number1 = strtof(&data[1], &tmp);
+  float number2 = strtof(tmp, NULL);
+
+  float res = 0.0;
+  switch (data[0])
+  {
+  case '+':
+    res = number1 + number2;
+    break;
+  case '-':
+    res = number1 - number2;
+    break;
+  }
+
+  char* final = malloc(sizeof(char) * 200);
+  strcat(final, "calcule: ");
+  sprintf(tmp, "%f", res);
+  strcat(final, tmp);
+  return final;
 }
 
 void enregistre_data(char *data, char *pathname)
@@ -146,32 +162,6 @@ int recois_envoie_message(int client_socket_fd)
     plot(data);
   }
   return (EXIT_SUCCESS);
-}
-
-char* calcule(char data[])
-{
-  memmove(data, data+9, strlen(data));
-
-  char* tmp;
-  float number1 = strtof(&data[1], &tmp);
-  float number2 = strtof(tmp, NULL);
-
-  float res = 0.0;
-  switch (data[0])
-  {
-  case '+':
-    res = number1 + number2;
-    break;
-  case '-':
-    res = number1 - number2;
-    break;
-  }
-
-  char* final = malloc(sizeof(char) * 200);
-  strcat(final, "calcule: ");
-  sprintf(tmp, "%f", res);
-  strcat(final, tmp);
-  return final;
 }
 
 int main()

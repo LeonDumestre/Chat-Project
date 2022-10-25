@@ -10,6 +10,17 @@
  * de traiter ces messages et de répondre aux clients.
  */
 
+#pragma once
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/epoll.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+
 #ifndef __SERVER_H__
 #define __SERVER_H__
 
