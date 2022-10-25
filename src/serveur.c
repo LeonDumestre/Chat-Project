@@ -100,26 +100,26 @@ int recois_envoie_message(int client_socket_fd)
    * Les données envoyées par le client peuvent commencer par le mot "message :" ou un autre mot.
    */
   printf("Message recu: %s\n", data);
-  char code[10];
-  sscanf(data, "%s", code);
+  char message_type[10];
+  sscanf(data, "%s", message_type);
 
   // Si le message commence par le mot: 'message:'
-  if (strcmp(code, "message:") == 0)
+  if (strcmp(message_type, "message:") == 0)
   {
     renvoie_message(client_socket_fd, data);
   }
   // Si le message commence par le mot: 'calcule:'
-  else if (strcmp(code, "calcule:") == 0)
+  else if (strcmp(message_type, "calcule:") == 0)
   {
     char* res = calcule(data);
     renvoie_message(client_socket_fd, res);
     free(res);
   }
-  else if (strcmp(code, "nom:") == 0)
+  else if (strcmp(message_type, "nom:") == 0)
   {
     renvoie_message(client_socket_fd, data);
   }
-  else if (strcmp(code, "image:") == 0)
+  else if (strcmp(message_type, "image:") == 0)
   {
     plot(data);
   }
@@ -152,7 +152,6 @@ char* calcule(char data[])
   strcat(final, tmp);
   return final;
 }
-
 
 int main()
 {
