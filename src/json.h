@@ -5,6 +5,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  *
  */
+#pragma once
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,8 +13,10 @@
 
 char* writeJSON(char message_type[], char message[]);
 
-void getCode();
+char* getCode(char json[]);
 
-char* getCalculeOperator(char json[]);
+char* getValeurs(char json[]);
 
-int* getCalculeMessage(char json[]);
+void getCalculeOperator(char json[]);
+
+void getCalculeMessage(char json[]);

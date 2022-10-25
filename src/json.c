@@ -9,17 +9,18 @@
 
 char* writeJSON(char message_type[], char message[])
 {
+  printf("Message: %s\n", message);
   char* json = malloc(sizeof(char) * 2048);
 
   strcpy(json, "{\"code\":\"");
   strcat(json, message_type);
   strcat(json, "\",\"valeurs\":[");
 
-  if (strcmp(message_type, "message") == 0)
+  if (strcmp(message_type, "message") == 0 || strcmp(message_type, "nom") == 0)
   {
-    strcat(json, "\"");
+    if (message[0] != '"') strcat(json, "\"");
     strcat(json, message);
-    strcat(json, "\"");
+    if (message[(int)strlen(message)-1] != '"') strcat(json, "\"");
   }
 
   else if (strcmp(message_type, "calcule") == 0)
@@ -74,19 +75,71 @@ char* writeJSON(char message_type[], char message[])
   return json;
 }
 
-void getCode()
+char* getCode(char json[])
 {
-  // char* str = json + 4;
-  // printf("Test: %s", str);
-  printf("test");
+  char str[2048];
+  strcpy(str, json);
+
+  char* code = malloc(sizeof(char) * 10);
+  int ind = 0, indCode = 0, isCode = 0;
+
+  while (ind < (int)strlen(str))
+  {
+    if (isCode)
+    {
+      if (str[ind] == '"') {
+        break;
+      }
+
+      code[indCode] = str[ind];
+      indCode++;
+    }
+
+    else if (str[ind] == ':' && ind+1 < (int)strlen(str) && str[ind+1] == '\"')
+    {
+      ind++;
+      isCode = 1;
+    }
+    ind++;
+  }
+  return code;
 }
 
-char* getCalculeOperator(char json[])
+char* getValeurs(char json[])
+{
+  char str[2048];
+  strcpy(str, json);
+
+  char* valeurs = malloc(sizeof(char) * 10);
+  int ind = 0, indValeurs = 0, isValeurs = 0;
+
+  while (ind < (int)strlen(str))
+  {
+    if (isValeurs)
+    {
+      if (str[ind] == ']') {
+        break;
+      }
+
+      valeurs[indValeurs] = str[ind];
+      indValeurs++;
+    }
+
+    else if (str[ind] == '[')
+    {
+      isValeurs = 1;
+    }
+    ind++;
+  }
+  return valeurs;
+}
+
+void getCalculeOperator(char json[])
 {
 
 }
 
-int* getCalculeMessage(char json[])
+void getCalculeMessage(char json[])
 {
 
 }

@@ -78,15 +78,13 @@ char* convertToJson(char message[])
 
 int envoie_nom_client(int socketfd)
 {
-  char data[25];
   // la réinitialisation de l'ensemble des données
-  memset(data, 0, sizeof(data));
+  // memset(data, 0, sizeof(data));
 
   // Demandez à l'utilisateur d'entrer un message
   char nom[25];
   gethostname(nom, 25);
-  strcpy(data, "nom: ");
-  strcat(data, nom);
+  char* data = writeJSON("nom", nom);
 
   int write_status = write(socketfd, data, strlen(data));
   if (write_status < 0)
@@ -94,19 +92,20 @@ int envoie_nom_client(int socketfd)
     perror("erreur ecriture");
     exit(EXIT_FAILURE);
   }
+  free(data);
 
   // la réinitialisation de l'ensemble des données
-  memset(data, 0, sizeof(data));
+  // memset(data, 0, sizeof(data));
 
-  // lire les données de la socket
-  int read_status = read(socketfd, data, sizeof(data));
-  if (read_status < 0)
-  {
-    perror("erreur lecture");
-    return -1;
-  }
+  // // lire les données de la socket
+  // int read_status = read(socketfd, data, sizeof(data));
+  // if (read_status < 0)
+  // {
+  //   perror("erreur lecture");
+  //   return -1;
+  // }
 
-  printf("Nom recu: %s\n", data);
+  // printf("Nom recu: %s\n", data);
 
   return 0;
 }
@@ -142,6 +141,7 @@ int envoie_recois_message(int socketfd)
   printf("Votre message (max 1000 caracteres): ");
   fgets(message, sizeof(message), stdin);
 
+  if (message[(int)strlen(message)-1] == '\n') message[(int)strlen(message)-1] = '\0';
   char* json = convertToJson(message);
 
   int write_status = write(socketfd, json, strlen(json));
