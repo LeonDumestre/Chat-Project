@@ -10,17 +10,7 @@
  * d'envoyer et de recevoir des messages. Ces messages peuvent être du simple texte ou des chiffres.
  */
 
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <ctype.h>
 #include "client.h"
-#include "bmp.h"
-
 
 void analyse(char *pathname, char *data)
 {
@@ -128,11 +118,26 @@ int envoie_nom_client(int socketfd)
   return 0;
 }
 
+int envoie_couleurs(int socketfd, char *pathname)
+{
+  char data[1024];
+  memset(data, 0, sizeof(data));
+  analyse(pathname, data);
+
+  int write_status = write(socketfd, data, strlen(data));
+  if (write_status < 0)
+  {
+    perror("erreur ecriture");
+    exit(EXIT_FAILURE);
+  }
+
+  return 0;
+}
+
 /*
  * Fonction d'envoi et de réception de messages
  * Il faut un argument : l'identifiant de la socket
  */
-
 int envoie_recois_message(int socketfd)
 {
   char data[1024];
@@ -174,22 +179,6 @@ int envoie_recois_message(int socketfd)
   printf("Message recu: %s\n", data);
 
   envoie_recois_message(socketfd);
-
-  return 0;
-}
-
-int envoie_couleurs(int socketfd, char *pathname)
-{
-  char data[1024];
-  memset(data, 0, sizeof(data));
-  analyse(pathname, data);
-
-  int write_status = write(socketfd, data, strlen(data));
-  if (write_status < 0)
-  {
-    perror("erreur ecriture");
-    exit(EXIT_FAILURE);
-  }
 
   return 0;
 }
