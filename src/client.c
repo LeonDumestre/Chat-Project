@@ -60,17 +60,30 @@ char *definie_entete(char message[])
   {
     switch (message[1])
     {
-    case 'm':
-      strcpy(message_type, "message: ");
-      break;
-    case 'n':
-      strcpy(message_type, "calcule: ");
-      break;
-    case 'c':
-      strcpy(message_type, "couleur: ");
-      break;
+      case 'm':
+        strcpy(message_type, "message: ");
+        break;
+      case 'n':
+        if (message[3] == '+' || message[3] == '-')
+        {
+          char *str;
+          int number1 = (int)strtof(&message[4], &str);
+          int number2 = (int)strtof(str, NULL);
+
+          if (number1 && number2)
+          {
+            strcpy(message_type, "calcule: ");
+          }
+          else
+          {
+            strcpy(message_type, "message: ");
+          }
+        }
+        break;
+      case 'c':
+        strcpy(message_type, "couleur: ");
+        break;
     }
-    printf("%s", message_type);
   }
   else
   {

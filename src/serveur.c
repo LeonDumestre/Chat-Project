@@ -111,7 +111,9 @@ int recois_envoie_message(int client_socket_fd)
   // Si le message commence par le mot: 'calcule:'
   else if (strcmp(code, "calcule:") == 0)
   {
-    renvoie_message(client_socket_fd, data);
+    char* res = calcule(data);
+    renvoie_message(client_socket_fd, res);
+    free(res);
   }
   else if (strcmp(code, "nom:") == 0)
   {
@@ -124,6 +126,33 @@ int recois_envoie_message(int client_socket_fd)
 
   return (EXIT_SUCCESS);
 }
+
+char* calcule(char data[])
+{
+  memmove(data, data+9, strlen(data));
+
+  char* tmp;
+  float number1 = strtof(&data[1], &tmp);
+  float number2 = strtof(tmp, NULL);
+
+  float res = 0.0;
+  switch (data[0])
+  {
+  case '+':
+    res = number1 + number2;
+    break;
+  case '-':
+    res = number1 - number2;
+    break;
+  }
+
+  char* final = malloc(sizeof(char) * 200);
+  strcat(final, "calcule: ");
+  sprintf(tmp, "%f", res);
+  strcat(final, tmp);
+  return final;
+}
+
 
 int main()
 {
