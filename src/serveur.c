@@ -52,32 +52,6 @@ void plot(char *data)
   pclose(p);
 }
 
-char* calcule(char data[])
-{
-  memmove(data, data+9, strlen(data));
-
-  char* tmp;
-  float number1 = strtof(&data[1], &tmp);
-  float number2 = strtof(tmp, NULL);
-
-  float res = 0.0;
-  switch (data[0])
-  {
-  case '+':
-    res = number1 + number2;
-    break;
-  case '-':
-    res = number1 - number2;
-    break;
-  }
-
-  char* final = malloc(sizeof(char) * 200);
-  strcat(final, "calcule: ");
-  sprintf(tmp, "%f", res);
-  strcat(final, tmp);
-  return final;
-}
-
 void enregistre_data(char *data, char *pathname)
 {
   FILE *f = fopen(pathname, "w");
@@ -164,9 +138,39 @@ int recois_envoie_message(int client_socket_fd)
   return (EXIT_SUCCESS);
 }
 
+char* calcule(char data[])
+{
+  memmove(data, data+9, strlen(data));
+
+  char op;
+  int N1, N2;
+  sscanf(data, "%c %d %d", &op, &N1, &N2);
+
+  float res = 0.0;
+  switch (op)
+  {
+  case '+':
+    res = N1 + N2;
+    break;
+  case '-':
+    res = N1 - N2;
+    break;
+  }
+
+  char* strRes = malloc(sizeof(char) * 200);
+  char* final = malloc(sizeof(char) * 200);
+
+  strcat(final, "calcule: ");
+  sprintf(strRes, "%f", res);
+  strcat(final, strRes);
+  free(strRes);
+  
+  return final;
+}
+
+
 int main()
 {
-
   int socketfd;
   int bind_status;
 

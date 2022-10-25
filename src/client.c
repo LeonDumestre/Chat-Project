@@ -12,53 +12,6 @@
 
 #include "client.h"
 
-char *definie_entete(char message[])
-{
-  char *message_type = malloc(sizeof(char) * 20);
-
-  if (message[0] == '/' && message[2] == ' ')
-  {
-    switch (message[1])
-    {
-    case 'm':
-      strcpy(message_type, "message: ");
-      break;
-    case 'n':
-      if (message[3] == '+' || message[3] == '-')
-      {
-        char *str;
-        int number1 = (int)strtof(&message[4], &str);
-        int number2 = (int)strtof(str, NULL);
-
-        if (number1 && number2)
-        {
-          strcpy(message_type, "calcule: ");
-        }
-        else
-        {
-          strcpy(message_type, "message: ");
-        }
-      }
-      else
-      {
-        strcpy(message_type, "message: ");
-      }
-      break;
-    case 'c':
-      strcpy(message_type, "couleurs: ");
-      break;
-    case 'b':
-      strcpy(message_type, "balise: ");
-      break;
-    }
-  }
-  else
-  {
-    strcpy(message_type, "message: ");
-  }
-  return message_type;
-}
-
 void analyse(char *pathname, char *data)
 {
   // compte de couleurs
@@ -129,6 +82,45 @@ void writeJSON(char message_type[], char message[])
 
   printf("Json: %s\n", json);
   // return json;
+
+char *definie_entete(char message[])
+{
+  char* message_type = malloc(sizeof(char) * 1024);
+
+  if (message[0] == '/' && message[2] == ' ')
+  {
+    switch (message[1])
+    {
+      case 'm':
+        strcpy(message_type, "message: ");
+        break;
+      case 'n':
+        char op;
+        int N1, N2;
+        int conv = sscanf(message, "%c %d %d", &op, &N1, &N2);
+
+        if (conv == 3 && (op == '+' || op == '-'))
+        {
+          strcpy(message_type, "calcule: ");
+        }
+        else
+        {
+          strcpy(message_type, "message: ");
+        }
+        break;
+      case 'c':
+        strcpy(message_type, "couleurs: ");
+        break;
+      case 'b':
+        strcpy(message_type, "balise: ");
+        break;
+    }
+  }
+  else
+  {
+    strcpy(message_type, "message: ");
+  }
+  return message_type;
 }
 
 int envoie_nom_client(int socketfd)
@@ -178,7 +170,6 @@ int envoie_couleurs(int socketfd, char *pathname)
     perror("erreur ecriture");
     exit(EXIT_FAILURE);
   }
-
   return 0;
 }
 

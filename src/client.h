@@ -32,7 +32,7 @@
 #define PORT 8089
 
 
-char *definie_entete(char data[]);
+char *definie_entete(char message[]);
 
 void analyse(char *pathname, char *data);
 
@@ -47,5 +47,6 @@ int envoie_couleurs(int socketfd, char *pathname);
  * Il faut un argument : l'identifiant de la socket
  */
 int envoie_recois_message(int socketfd);
+
 
 #endif
