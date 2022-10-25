@@ -81,7 +81,10 @@ char *definie_entete(char message[])
         }
         break;
       case 'c':
-        strcpy(message_type, "couleur: ");
+        strcpy(message_type, "couleurs: ");
+        break;
+      case 'b':
+        strcpy(message_type, "balise: ");
         break;
     }
   }

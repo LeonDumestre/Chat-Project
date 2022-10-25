@@ -62,6 +62,18 @@ void plot(char *data)
   pclose(p);
 }
 
+void enregistre_data(char *data, char *pathname)
+{
+  FILE *f = fopen(pathname, "w");
+  if (f == NULL)
+  {
+    printf("Error opening file!\n");
+    exit(1);
+  }
+  fprintf(f, "%s", data);
+  fclose(f);
+}
+
 /* renvoyer un message (*data) au client (client_socket_fd) */
 int renvoie_message(int client_socket_fd, char *data)
 {
@@ -108,6 +120,10 @@ int recois_envoie_message(int client_socket_fd)
   {
     renvoie_message(client_socket_fd, data);
   }
+  else if (strcmp(message_type, "nom:") == 0)
+  {
+    renvoie_message(client_socket_fd, data);
+  }
   // Si le message commence par le mot: 'calcule:'
   else if (strcmp(message_type, "calcule:") == 0)
   {
@@ -115,15 +131,20 @@ int recois_envoie_message(int client_socket_fd)
     renvoie_message(client_socket_fd, res);
     free(res);
   }
-  else if (strcmp(message_type, "nom:") == 0)
+  else if (strcmp(message_type, "couleurs:") == 0)
   {
+    enregistre_data(data, "couleurs.txt");
+    renvoie_message(client_socket_fd, data);
+  }
+  else if (strcmp(message_type, "balise:") == 0)
+  {
+    enregistre_data(data, "balise.txt");
     renvoie_message(client_socket_fd, data);
   }
   else if (strcmp(message_type, "image:") == 0)
   {
     plot(data);
   }
-
   return (EXIT_SUCCESS);
 }
 
