@@ -6,5 +6,14 @@
  *
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-void writeJSON(char message_type[], char message[]);
+char* writeJSON(char message_type[], char message[]);
+
+void getCode();
+
+char* getCalculeOperator(char json[]);
+
+int* getCalculeMessage(char json[]);

@@ -21,6 +21,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "json.h"
+
 #ifndef __SERVER_H__
 #define __SERVER_H__
 

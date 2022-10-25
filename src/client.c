@@ -43,9 +43,9 @@ void analyse(char *pathname, char *data)
   data[strlen(data) - 1] = '\0';
 }
 
-char *definie_entete(char message[])
+char* convertToJson(char message[])
 {
-  char* message_type = malloc(sizeof(char) * 1024);
+  char message_type[20] = "message";
 
   if (message[0] == '/' && message[2] == ' ')
   {
@@ -53,10 +53,6 @@ char *definie_entete(char message[])
     memmove(message, message + 3, strlen(message));
     switch (letter)
     {
-      case 'm':
-        strcpy(message_type, "message: ");
-        break;
-
       case 'n':;
         char op;
         int N1, N2;
@@ -64,28 +60,20 @@ char *definie_entete(char message[])
 
         if (conv == 3 && (op == '+' || op == '-'))
         {
-          strcpy(message_type, "calcule: ");
-        }
-        else
-        {
-          strcpy(message_type, "message: ");
+          strcpy(message_type, "calcule");
         }
         break;
-
       case 'c':
-        strcpy(message_type, "couleurs: ");
+        strcpy(message_type, "couleurs");
         break;
 
       case 'b':
-        strcpy(message_type, "balises: ");
+        strcpy(message_type, "balises");
         break;
     }
   }
-  else
-  {
-    strcpy(message_type, "message: ");
-  }
-  return message_type;
+  char* json = writeJSON(message_type, message);
+  return json;
 }
 
 int envoie_nom_client(int socketfd)
@@ -154,14 +142,10 @@ int envoie_recois_message(int socketfd)
   printf("Votre message (max 1000 caracteres): ");
   fgets(message, sizeof(message), stdin);
 
-  char* message_type = definie_entete(message);
+  char* json = convertToJson(message);
 
-  strcpy(data, message_type); 
-  strcat(data, message);
-
-  free(message_type);
-
-  int write_status = write(socketfd, data, strlen(data));
+  int write_status = write(socketfd, json, strlen(json));
+  free(json);
   if (write_status < 0)
   {
     perror("erreur ecriture");
@@ -189,7 +173,6 @@ int envoie_recois_message(int socketfd)
 int main(int argc, char **argv)
 {
   int socketfd;
-
   struct sockaddr_in server_addr;
 
   // if (argc < 2)

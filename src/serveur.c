@@ -102,6 +102,7 @@ int recois_envoie_message(int client_socket_fd)
    * Les données envoyées par le client peuvent commencer par le mot "message :" ou un autre mot.
    */
   printf("Message recu: %s\n", data);
+
   char message_type[10];
   sscanf(data, "%s", message_type);
 
