@@ -152,25 +152,29 @@ char* calcule(char data[])
 {
   memmove(data, data+9, strlen(data));
 
-  char* tmp;
-  float number1 = strtof(&data[1], &tmp);
-  float number2 = strtof(tmp, NULL);
+  char op;
+  int N1, N2;
+  sscanf(data, "%c %d %d", &op, &N1, &N2);
 
   float res = 0.0;
-  switch (data[0])
+  switch (op)
   {
   case '+':
-    res = number1 + number2;
+    res = N1 + N2;
     break;
   case '-':
-    res = number1 - number2;
+    res = N1 - N2;
     break;
   }
 
+  char* strRes = malloc(sizeof(char) * 200);
   char* final = malloc(sizeof(char) * 200);
+
   strcat(final, "calcule: ");
-  sprintf(tmp, "%f", res);
-  strcat(final, tmp);
+  sprintf(strRes, "%f", res);
+  strcat(final, strRes);
+  free(strRes);
+  
   return final;
 }
 

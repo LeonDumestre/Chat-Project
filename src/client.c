@@ -21,8 +21,7 @@
 #include "client.h"
 #include "bmp.h"
 
-<<<<<<< HEAD
-=======
+
 void analyse(char *pathname, char *data)
 {
   // compte de couleurs
@@ -68,7 +67,7 @@ char *definie_entete(char message[])
       case 'n':
         char op;
         int N1, N2;
-        int conv = sscanf(data, "%c %d %d", &op, &N1, &N2);
+        int conv = sscanf(message, "%c %d %d", &op, &N1, &N2);
 
         if (conv == 3 && (op == '+' || op == '-'))
         {
@@ -245,44 +244,4 @@ int main(int argc, char **argv)
   }
 
   close(socketfd);
-}
-
-void writeJSON(char message_type[], char message[]) {
-  char json[2048] = "{\"code\":\"";
-
-  strcat(json, message_type);
-  strcat(json, "\",\"valeurs\":[\"");
-
-  if (strcmp(message_type, "message"))
-  {
-    strcat(json, message);
-  }
-  else if (strcmp(message_type, "calcule"))
-  {
-    char op;
-    int N1, N2;
-    int conv = sscanf(data, "%c %d %d", &op, &N1, &N2);
-    if (op == '+' || op == '-')
-    {
-      strcat(json, "\"");
-      strcat(json, op);
-      strcat(json, ",");
-      strcat(json, N1);
-      strcat(json, ",");
-      strcat(json, N2);
-    }
-  }
-  else if (strcmp(message_type, "couleurs"))
-  {
-    strcat(json, message);
-  }
-  else if (strcmp(message_type, "balises"))
-  {
-    strcat(json, message);
-  }
-  
-  strcat(json, "\"]}");
-
-  printf("Json: %s\n", json);
-  //return json;
 }
