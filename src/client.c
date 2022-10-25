@@ -14,7 +14,7 @@
 
 char *definie_entete(char message[])
 {
-  char *message_type = malloc(sizeof(char) * 1024);
+  char *message_type = malloc(sizeof(char) * 20);
 
   if (message[0] == '/' && message[2] == ' ')
   {
@@ -90,6 +90,47 @@ void analyse(char *pathname, char *data)
   data[strlen(data) - 1] = '\0';
 }
 
+void writeJSON(char message_type[], char message[])
+{
+  char json[2048] = "{\"code\":\"";
+
+  strcat(json, message_type);
+  strcat(json, "\",\"valeurs\":[\"");
+
+  if (strcmp(message_type, "message"))
+  {
+    strcat(json, message);
+  }
+  else if (strcmp(message_type, "calcule"))
+  {
+    char op;
+    int N1, N2;
+    int conv = sscanf(data, "%c %d %d", &op, &N1, &N2);
+    if (op == '+' || op == '-')
+    {
+      strcat(json, "\"");
+      strcat(json, op);
+      strcat(json, ",");
+      strcat(json, N1);
+      strcat(json, ",");
+      strcat(json, N2);
+    }
+  }
+  else if (strcmp(message_type, "couleurs"))
+  {
+    strcat(json, message);
+  }
+  else if (strcmp(message_type, "balises"))
+  {
+    strcat(json, message);
+  }
+
+  strcat(json, "\"]}");
+
+  printf("Json: %s\n", json);
+  // return json;
+}
+
 int envoie_nom_client(int socketfd)
 {
   char data[25];
@@ -147,23 +188,23 @@ int envoie_couleurs(int socketfd, char *pathname)
  */
 int envoie_recois_message(int socketfd)
 {
-  char data[1024];
+  char data[2048];
   // la réinitialisation de l'ensemble des données
   memset(data, 0, sizeof(data));
 
   // Demandez à l'utilisateur d'entrer un message
-  char message[1024];
+  char* message = malloc(sizeof(char) * 2048);
 
   printf("Votre message (max 1000 caracteres): ");
   fgets(message, sizeof(message), stdin);
 
   char* message_type = definie_entete(message);
 
-  strcpy(data, message_type);
+  strcpy(data, message_type); 
+  strcat(data, message);
 
   free(message_type);
- 
-  strcat(data, message);
+  free(message);
 
   int write_status = write(socketfd, data, strlen(data));
   if (write_status < 0)
@@ -240,44 +281,4 @@ int main(int argc, char **argv)
   }
 
   close(socketfd);
-}
-
-void writeJSON(char message_type[], char message[]) {
-  char json[2048] = "{\"code\":\"";
-
-  strcat(json, message_type);
-  strcat(json, "\",\"valeurs\":[\"");
-
-  if (strcmp(message_type, "message"))
-  {
-    strcat(json, message);
-  }
-  else if (strcmp(message_type, "calcule"))
-  {
-    char op;
-    int N1, N2;
-    int conv = sscanf(data, "%c %d %d", &op, &N1, &N2);
-    if (op == '+' || op == '-')
-    {
-      strcat(json, "\"");
-      strcat(json, op);
-      strcat(json, ",");
-      strcat(json, N1);
-      strcat(json, ",");
-      strcat(json, N2);
-    }
-  }
-  else if (strcmp(message_type, "couleurs"))
-  {
-    strcat(json, message);
-  }
-  else if (strcmp(message_type, "balises"))
-  {
-    strcat(json, message);
-  }
-  
-  strcat(json, "\"]}");
-
-  printf("Json: %s\n", json);
-  //return json;
 }
