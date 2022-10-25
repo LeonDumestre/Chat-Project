@@ -18,10 +18,81 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <ctype.h>
-
 #include "client.h"
 #include "bmp.h"
 
+<<<<<<< HEAD
+=======
+void analyse(char *pathname, char *data)
+{
+  // compte de couleurs
+  couleur_compteur *cc = analyse_bmp_image(pathname);
+
+  int count;
+  strcpy(data, "couleurs: ");
+  char temp_string[10] = "10,";
+  if (cc->size < 10)
+  {
+    sprintf(temp_string, "%d,", cc->size);
+  }
+  strcat(data, temp_string);
+
+  // choisir 10 couleurs
+  for (count = 1; count < 11 && cc->size - count > 0; count++)
+  {
+    if (cc->compte_bit == BITS32)
+    {
+      sprintf(temp_string, "#%02x%02x%02x,", cc->cc.cc24[cc->size - count].c.rouge, cc->cc.cc32[cc->size - count].c.vert, cc->cc.cc32[cc->size - count].c.bleu);
+    }
+    if (cc->compte_bit == BITS24)
+    {
+      sprintf(temp_string, "#%02x%02x%02x,", cc->cc.cc32[cc->size - count].c.rouge, cc->cc.cc32[cc->size - count].c.vert, cc->cc.cc32[cc->size - count].c.bleu);
+    }
+    strcat(data, temp_string);
+  }
+  // enlever le dernier virgule
+  data[strlen(data) - 1] = '\0';
+}
+
+char *definie_entete(char message[])
+{
+  char* message_type = malloc(sizeof(char) * 1024);
+
+  if (message[0] == '/' && message[2] == ' ')
+  {
+    switch (message[1])
+    {
+      case 'm':
+        strcpy(message_type, "message: ");
+        break;
+      case 'n':
+        char op;
+        int N1, N2;
+        int conv = sscanf(data, "%c %d %d", &op, &N1, &N2);
+
+        if (conv == 3 && (op == '+' || op == '-'))
+        {
+          strcpy(message_type, "calcule: ");
+        }
+        else
+        {
+          strcpy(message_type, "message: ");
+        }
+        break;
+      case 'c':
+        strcpy(message_type, "couleurs: ");
+        break;
+      case 'b':
+        strcpy(message_type, "balise: ");
+        break;
+    }
+  }
+  else
+  {
+    strcpy(message_type, "message: ");
+  }
+  return message_type;
+}
 
 int envoie_nom_client(int socketfd)
 {
@@ -71,9 +142,16 @@ int envoie_recois_message(int socketfd)
 
   // Demandez à l'utilisateur d'entrer un message
   char message[1024];
+
   printf("Votre message (max 1000 caracteres): ");
   fgets(message, sizeof(message), stdin);
-  strcpy(data, definie_entete(message));
+
+  char* message_type = definie_entete(message);
+
+  strcpy(data, message_type);
+
+  free(message_type);
+ 
   strcat(data, message);
 
   int write_status = write(socketfd, data, strlen(data));
@@ -101,38 +179,6 @@ int envoie_recois_message(int socketfd)
   return 0;
 }
 
-void analyse(char *pathname, char *data)
-{
-  // compte de couleurs
-  couleur_compteur *cc = analyse_bmp_image(pathname);
-
-  int count;
-  strcpy(data, "couleurs: ");
-  char temp_string[10] = "10,";
-  if (cc->size < 10)
-  {
-    sprintf(temp_string, "%d,", cc->size);
-  }
-  strcat(data, temp_string);
-
-  // choisir 10 couleurs
-  for (count = 1; count < 11 && cc->size - count > 0; count++)
-  {
-    if (cc->compte_bit == BITS32)
-    {
-      sprintf(temp_string, "#%02x%02x%02x,", cc->cc.cc24[cc->size - count].c.rouge, cc->cc.cc32[cc->size - count].c.vert, cc->cc.cc32[cc->size - count].c.bleu);
-    }
-    if (cc->compte_bit == BITS24)
-    {
-      sprintf(temp_string, "#%02x%02x%02x,", cc->cc.cc32[cc->size - count].c.rouge, cc->cc.cc32[cc->size - count].c.vert, cc->cc.cc32[cc->size - count].c.bleu);
-    }
-    strcat(data, temp_string);
-  }
-
-  // enlever le dernier virgule
-  data[strlen(data) - 1] = '\0';
-}
-
 int envoie_couleurs(int socketfd, char *pathname)
 {
   char data[1024];
@@ -147,22 +193,6 @@ int envoie_couleurs(int socketfd, char *pathname)
   }
 
   return 0;
-}
-
-char* definie_entete(char data[])
-{
-  if (data[0] == '+' || data[0] == '-')
-  {
-    char op;
-    int N1, N2;
-    int conv = sscanf(data, "%c %d %d", &op, &N1, &N2);
-
-    if (conv == 3)
-    {
-      return "calcule: ";
-    }
-  }
-  return "message: ";
 }
 
 int main(int argc, char **argv)
