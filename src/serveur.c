@@ -52,32 +52,6 @@ void plot(char *data)
   pclose(p);
 }
 
-char* calcule(char data[])
-{
-  memmove(data, data+9, strlen(data));
-
-  char* tmp;
-  float number1 = strtof(&data[1], &tmp);
-  float number2 = strtof(tmp, NULL);
-
-  float res = 0.0;
-  switch (data[0])
-  {
-  case '+':
-    res = number1 + number2;
-    break;
-  case '-':
-    res = number1 - number2;
-    break;
-  }
-
-  char* final = malloc(sizeof(char) * 200);
-  strcat(final, "calcule: ");
-  sprintf(tmp, "%f", res);
-  strcat(final, tmp);
-  return final;
-}
-
 void enregistre_data(char *data, char *pathname)
 {
   FILE *f = fopen(pathname, "w");
