@@ -58,7 +58,7 @@ char* convertToJson(char message[])
         int N1, N2;
         int conv = sscanf(message, "%c %d %d", &op, &N1, &N2);
 
-        if (conv == 3 && (op == '+' || op == '-'))
+        if (conv == 3 && (op == '+' || op == '-' || op == '*' || op == '/'))
         {
           strcpy(message_type, "calcule");
         }
