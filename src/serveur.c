@@ -172,14 +172,8 @@ char* calcule(char data[])
   case '-':
     res = N1 - N2;
     break;
-  case '*':
-    res = N1 * N2;
-    break;
-  case '/':
-    if (N2 != 0) res = N1 / N2;
-    break;
   }
-
+  printf("Res calc: %f", res);
   char* strRes = malloc(sizeof(char) * 200);
   sprintf(strRes, "%f", res);
   return strRes;

@@ -29,12 +29,11 @@ char* writeJSON(char message_type[], char message[])
     int conv = sscanf(message, "%c %d %d", &op, &N1, &N2);
 
     char* tmp = malloc(sizeof(char)*200);
-    if (conv == 3 && (op == '+' || op == '-'))
+    if (conv == 3 && (op == '+' || op == '-' || op == '*' || op == '/'))
     {
       strcat(json, "\"");
-      char* pOp = &op;
-      strcat(json, pOp);
-      json[strlen(json)-1] = '\0';
+      json[strlen(json)] = op;
+      json[strlen(json)] = '\0';
       strcat(json, "\",");
 
       sprintf(tmp, "%d", N1);
