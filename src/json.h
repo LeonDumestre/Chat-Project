@@ -16,7 +16,3 @@ char* writeJSON(char message_type[], char message[]);
 char* getCode(char json[]);
 
 char* getValeurs(char json[]);
-
-void getCalculeOperator(char json[]);
-
-void getCalculeMessage(char json[]);

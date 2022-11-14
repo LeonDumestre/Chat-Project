@@ -55,10 +55,10 @@ char* convertToJson(char message[])
     {
       case 'n':;
         char op;
-        int N1, N2;
-        int conv = sscanf(message, "%c %d %d", &op, &N1, &N2);
-
-        if (conv == 3 && (op == '+' || op == '-' || op == '*' || op == '/'))
+        float N1, N2;
+        int conv = sscanf(message, "%c %f %f", &op, &N1, &N2);
+        printf("Conv: %d\n", conv);
+        if (conv == 3 && (op == '+' || op == '-' || op == '*' || op == '/' || op == '%' || op == '&' || op == '|' || op == '~'))
         {
           strcpy(message_type, "calcule");
         }
@@ -94,7 +94,6 @@ int envoie_nom_client(int socketfd)
   }
   free(data);
 
-// Y avait ça de base mais je suis pas sûr de l'utilité
   // la réinitialisation de l'ensemble des données
   // memset(data, 0, sizeof(data));
 
