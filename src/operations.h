@@ -9,3 +9,7 @@
 /* 
  * Code pour traiter différents types d'opérations mathématiques
  */
+
+#pragma once
+
+char* calcule(char data[]);
