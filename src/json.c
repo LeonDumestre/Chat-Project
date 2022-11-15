@@ -86,7 +86,6 @@ char* writeJSON(char message_type[], char message[], bool sendByClient)
           }
 
           memmove(message, message + (int)strlen(item) + 1, strlen(message));
-          printf("item: %s\n", item);
           strcat(json, "\"");
           strcat(json, item);
           strcat(json, "\"");

@@ -118,6 +118,8 @@ int envoie_couleurs(int socketfd, char *pathname)
 
   free(json);
 
+  envoie_recois_message(socketfd);
+
   return 0;
 }
 
@@ -176,12 +178,6 @@ int main(int argc, char **argv)
 {
   int socketfd;
   struct sockaddr_in server_addr;
-
-  // if (argc < 2)
-  // {
-  //   printf("usage: ./client chemin_bmp_image\n");
-  //   return (EXIT_FAILURE);
-  // }
 
   /*
    * Creation d'une socket

@@ -112,7 +112,6 @@ int recois_envoie_message(int client_socket_fd)
   if (strcmp(message_type, "nom") == 0)
   {
     renvoie_message(client_socket_fd, data);
-    printf("test");
   }
 
   else if (strcmp(message_type, "message") == 0)
@@ -141,7 +140,7 @@ int recois_envoie_message(int client_socket_fd)
     //enregistre_data(valeurs, "couleurs.txt");
     plot(valeurs); 
     free(valeurs);
-    renvoie_message(client_socket_fd, data);
+    renvoie_message(client_socket_fd, valeurs);
   }
 
   else if (strcmp(message_type, "balises") == 0)
