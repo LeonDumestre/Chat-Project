@@ -91,6 +91,7 @@ int envoie_nom_client(int socketfd)
   }
   free(data);
 
+  // Y avait ça de base mais je suis pas sûr de l'utilité
   // la réinitialisation de l'ensemble des données
   // memset(data, 0, sizeof(data));
 
@@ -119,6 +120,9 @@ int envoie_couleurs(int socketfd, char *pathname)
     perror("erreur ecriture");
     exit(EXIT_FAILURE);
   }
+
+  envoie_recois_message(socketfd);
+  
   return 0;
 }
 
