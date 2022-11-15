@@ -12,22 +12,25 @@
 
 #include "client.h"
 
-void analyse(char *pathname, char *data)
+void analyse(char *pathname, char *data, int nb_couleurs)
 {
   // compte de couleurs
   couleur_compteur *cc = analyse_bmp_image(pathname);
 
   int count;
+  char nb_coleurs_str[10];
+  sprintf(nb_coleurs_str, "%d,", nb_couleurs);
+
   strcpy(data, "/c ");
-  char temp_string[10] = "10,";
-  if (cc->size < 10)
+  char temp_string[10] = "";
+  strcpy(temp_string, nb_coleurs_str);
+  if (cc->size < nb_couleurs)
   {
     sprintf(temp_string, "%d,", cc->size);
   }
   strcat(data, temp_string);
 
-  // choisir 10 couleurs
-  for (count = 1; count < 11 && cc->size - count > 0; count++)
+  for (count = 1; count < nb_couleurs + 1 && cc->size - count > 0; count++)
   {
     if (cc->compte_bit == BITS32)
     {
@@ -102,10 +105,10 @@ int envoie_nom_client(int socketfd)
   return 0;
 }
 
-int envoie_couleurs(int socketfd, char *pathname)
+int envoie_couleurs(int socketfd, char *pathname, int nb_couleurs)
 {
   char data[1024];
-  analyse(pathname, data);
+  analyse(pathname, data, nb_couleurs);
 
   char* json = convertToJson(data);
 
@@ -227,9 +230,27 @@ int main(int argc, char **argv)
   {
     // envoyer et recevoir un nom
     envoie_nom_client(socketfd);
+
+    // Demandez à l'utilisateur d'entrer un message
+    char message[1024];
+    int nb_colors = 10;
+
+    printf("Veuillez indiquer le nombre de couleurs à analyser (<30): ");
+    fgets(message, sizeof(message), stdin);
+
+    if (message[(int)strlen(message)-1] == '\n') message[(int)strlen(message)-1] = '\0';
+
+    if (message != NULL)
+    {
+      if (atoi(message) < 30 && atoi(message) > 0)
+      {
+        nb_colors = atoi(message);
+      }
+    }
+
     // envoyer et recevoir les couleurs prédominantes
     // d'une image au format BMP (argv[1])
-    envoie_couleurs(socketfd, argv[1]);
+    envoie_couleurs(socketfd, argv[1], nb_colors);
   }
 
   close(socketfd);

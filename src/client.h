@@ -35,11 +35,11 @@
 
 char* convertToJson(char message[]);
 
-void analyse(char *pathname, char *data);
+void analyse(char *pathname, char *data, int nb_couleurs);
 
 int envoie_nom_client(int socketfd);
 
-int envoie_couleurs(int socketfd, char *pathname);
+int envoie_couleurs(int socketfd, char *pathname, int nb_couleurs);
 
 /*
  * Fonction d'envoi et de réception de messages
