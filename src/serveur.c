@@ -139,14 +139,18 @@ int recois_envoie_message(int client_socket_fd)
 
   else if (strcmp(message_type, "couleurs") == 0)
   {
-    //enregistre_data(data, "couleurs.txt");
-    //plot(data); 
+    char* valeurs = getValeurs(data);
+    //enregistre_data(valeurs, "couleurs.txt");
+    //plot(valeurs); 
+    free(valeurs);
     renvoie_message(client_socket_fd, data);
   }
 
   else if (strcmp(message_type, "balises") == 0)
   {
-    enregistre_data(data, "balises.txt");
+    char* valeurs = getValeurs(data);
+    enregistre_data(valeurs, "balises.txt");
+    free(valeurs);
     renvoie_message(client_socket_fd, data);
   }
 

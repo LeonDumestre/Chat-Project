@@ -51,7 +51,6 @@ char* writeJSON(char message_type[], char message[], bool sendByClient)
     else {
       strcat(json, message);
     }
-    
   }
 
   else if (strcmp(message_type, "couleurs") == 0 || strcmp(message_type, "balises") == 0)
@@ -154,7 +153,7 @@ char* getValeurs(char json[])
     if (isValeurs)
     {
       if (str[ind] == ']') break;
-      if (str[ind] == '"') 
+      if (str[ind] == '"')
       {
         ind++;
         continue;
@@ -169,6 +168,17 @@ char* getValeurs(char json[])
     }
     ind++;
   }
+
+  char* message_type = getCode(json);
+  if (strcmp(message_type, "couleurs") == 0 || strcmp(message_type, "balises") == 0)
+  {
+    int nb;
+    sscanf(valeurs, "%d", &nb);
+    int nbDigit = getNbDigit(nb) + 1;
+    memmove(valeurs, valeurs + nbDigit, strlen(valeurs));
+  }
+  free(message_type);
+
   return valeurs;
 }
 
