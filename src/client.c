@@ -55,10 +55,10 @@ char* convertToJson(char message[])
     {
       case 'n':;
         char op;
-        int N1, N2;
-        int conv = sscanf(message, "%c %d %d", &op, &N1, &N2);
-
-        if (conv == 3 && (op == '+' || op == '-' || op == '*' || op == '/'))
+        float N1, N2;
+        int conv = sscanf(message, "%c %f %f", &op, &N1, &N2);
+        printf("Conv: %d\n", conv);
+        if (conv == 3 && (op == '+' || op == '-' || op == '*' || op == '/' || op == '%' || op == '&' || op == '|' || op == '~'))
         {
           strcpy(message_type, "calcule");
         }

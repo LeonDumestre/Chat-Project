@@ -25,33 +25,29 @@ char* writeJSON(char message_type[], char message[])
   else if (strcmp(message_type, "calcule") == 0)
   {
     char op;
-    int N1, N2;
-    int conv = sscanf(message, "%c %d %d", &op, &N1, &N2);
+    float F1, F2;
+    int conv = sscanf(message, "%c %f %f", &op, &F1, &F2);
 
     char* tmp = malloc(sizeof(char)*200);
-    if (conv == 3 && (op == '+' || op == '-' || op == '*' || op == '/'))
+    //Message du client ou Réponse du serveur si ~
+    if (conv == 3)
     {
       strcat(json, "\"");
       json[strlen(json)] = op;
       json[strlen(json)] = '\0';
       strcat(json, "\",");
 
-      sprintf(tmp, "%d", N1);
+      sprintf(tmp, "%f", F1);
       strcat(json, tmp);
       strcat(json, ",");
 
-      sprintf(tmp, "%d", N2);
+      sprintf(tmp, "%f", F2);
       strcat(json, tmp);
     }
+    //Réponse du serveur
     else
     {
-      float f;
-      conv = sscanf(message, "%f", &f);
-      if (conv == 1)
-      {
-        sprintf(tmp, "%f", f);
-        strcat(json, tmp);
-      }
+      strcat(json, message);
     }
     free(tmp);
   }
@@ -133,14 +129,4 @@ char* getValeurs(char json[])
     ind++;
   }
   return valeurs;
-}
-
-void getCalculeOperator(char json[])
-{
-
-}
-
-void getCalculeMessage(char json[])
-{
-
 }
