@@ -123,6 +123,9 @@ int envoie_couleurs(int socketfd, char *pathname)
     perror("erreur ecriture");
     exit(EXIT_FAILURE);
   }
+
+  envoie_recois_message(socketfd);
+  
   return 0;
 }
 
