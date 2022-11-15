@@ -120,7 +120,7 @@ int recois_envoie_message(int client_socket_fd)
   if (strcmp(message_type, "message") == 0)
   {
     char* valeurs = getValeurs(data);
-    char* final = writeJSON(message_type, valeurs);
+    char* final = writeJSON(message_type, valeurs, false);
     renvoie_message(client_socket_fd, final);
     free(valeurs);
     free(final);
@@ -130,7 +130,7 @@ int recois_envoie_message(int client_socket_fd)
   {
     char* valeurs = getValeurs(data);
     char* res = calcule(valeurs);
-    char* final = writeJSON(message_type, res);
+    char* final = writeJSON(message_type, res, false);
     renvoie_message(client_socket_fd, final);
     free(valeurs);
     free(res);

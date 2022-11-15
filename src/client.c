@@ -69,7 +69,7 @@ char* convertToJson(char message[])
         break;
     }
   }
-  char* json = writeJSON(message_type, message);
+  char* json = writeJSON(message_type, message, true);
   return json;
 }
 
@@ -81,7 +81,7 @@ int envoie_nom_client(int socketfd)
   // Demandez à l'utilisateur d'entrer un message
   char nom[25];
   gethostname(nom, 25);
-  char* data = writeJSON("nom", nom);
+  char* data = writeJSON("nom", nom, true);
 
   int write_status = write(socketfd, data, strlen(data));
   if (write_status < 0)
