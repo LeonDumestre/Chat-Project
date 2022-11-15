@@ -48,10 +48,13 @@ void analyse(char *pathname, char *data, int nb_couleurs)
 
 char* convertToJson(char message[])
 {
+  // Si il n'y a pas de commande /, c'est un message par défaut
   char message_type[20] = "message";
 
+  // Si la commande commence pas /
   if (message[0] == '/' && message[2] == ' ')
   {
+    // Vérifie la lettre après le / et copie le type dans message_type
     char letter = message[1];
     memmove(message, message + 3, strlen(message));
     switch (letter)
@@ -72,6 +75,7 @@ char* convertToJson(char message[])
         break;
     }
   }
+  // Récupère le message transformé en JSON (NULL si erreur)
   char* json = writeJSON(message_type, message, true);
   return json;
 }
@@ -157,6 +161,7 @@ int envoie_recois_message(int socketfd)
   fgets(message, sizeof(message), stdin);
 
   if (message[(int)strlen(message)-1] == '\n') message[(int)strlen(message)-1] = '\0';
+  // Récupère le message transformé en JSON (NULL si erreur)
   char* json = convertToJson(message);
 
   if (json != NULL)
