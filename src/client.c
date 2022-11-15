@@ -42,8 +42,6 @@ void analyse(char *pathname, char *data, int nb_couleurs)
     }
     strcat(data, temp_string);
   }
-  // enlever le dernier virgule
-  data[strlen(data) - 1] = '\0';
 }
 
 char* convertToJson(char message[])

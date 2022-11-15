@@ -12,7 +12,7 @@
 
 #include "serveur.h"
 
-void plot(char *data)
+void plot(char *data, int nb_couleurs)
 {
   // Extraire le compteur et les couleurs RGB
   FILE *p = popen("gnuplot -persist", "w");
@@ -22,7 +22,7 @@ void plot(char *data)
   fprintf(p, "set xrange [-15:15]\n");
   fprintf(p, "set yrange [-15:15]\n");
   fprintf(p, "set style fill transparent solid 0.9 noborder\n");
-  fprintf(p, "set title 'Top 10 colors'\n");
+  fprintf(p, "set title 'Top %d colors'\n", nb_couleurs);
   fprintf(p, "plot '-' with circles lc rgbcolor variable\n");
   while (1)
   {
@@ -34,8 +34,7 @@ void plot(char *data)
     str = NULL;
     if (count != 1)
     {
-      // Le numéro 36, parceque 360° (cercle) / 10 couleurs = 36
-      fprintf(p, "0 0 10 %d %d 0x%s\n", (count - 1) * 36, count * 36, token + 1);
+      fprintf(p, "0 0 %d %d %d 0x%s\n", nb_couleurs, (count - 1) * (360 / nb_couleurs), count * (360 / nb_couleurs), token + 1);
     }
     count++;
   }
@@ -45,7 +44,7 @@ void plot(char *data)
 
 void enregistre_data(char *data, char *pathname)
 {
-  FILE *f = fopen(pathname, "w");
+  FILE *f = fopen(pathname, "a");
   if (f == NULL)
   {
     printf("Error opening file!\n");
@@ -120,8 +119,14 @@ int recois_envoie_message(int client_socket_fd)
   else if (strcmp(message_type, "couleurs") == 0)
   {
     char* valeurs = getValeurs(data);
+
+    int nb;
+    sscanf(valeurs, "%d", &nb);
+    int nbDigit = getNbDigit(nb) + 1;
+    memmove(valeurs, valeurs + nbDigit, strlen(valeurs));;
+
     enregistre_data(valeurs, "couleurs.txt");
-    plot(valeurs); 
+    plot(valeurs, nb);
     free(valeurs);
     renvoie_message(client_socket_fd, data);
   }

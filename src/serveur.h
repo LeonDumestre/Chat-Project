@@ -33,7 +33,7 @@
  * envoyées par le client. En suite, le serveur envoie un message
  * en retour
  */
-void plot(char *data);
+void plot(char *data, int nb_couleurs);
 void enregistre_data(char *data, char *pathname);
 int renvoie_message(int client_socket_fd, char *data);
 int recois_envoie_message(int client_socket_fd);
