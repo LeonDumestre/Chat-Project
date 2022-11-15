@@ -75,10 +75,6 @@ char* convertToJson(char message[])
 
 int envoie_nom_client(int socketfd)
 {
-  // la réinitialisation de l'ensemble des données
-  // memset(data, 0, sizeof(data));
-
-  // Demandez à l'utilisateur d'entrer un message
   char nom[25];
   gethostname(nom, 25);
   char* data = writeJSON("nom", nom, true);
@@ -89,21 +85,21 @@ int envoie_nom_client(int socketfd)
     perror("erreur ecriture");
     exit(EXIT_FAILURE);
   }
-  free(data);
-
-  // Y avait ça de base mais je suis pas sûr de l'utilité
+  
   // la réinitialisation de l'ensemble des données
-  // memset(data, 0, sizeof(data));
+  memset(&data, 0, sizeof(data));
 
-  // // lire les données de la socket
-  // int read_status = read(socketfd, data, sizeof(data));
-  // if (read_status < 0)
-  // {
-  //   perror("erreur lecture");
-  //   return -1;
-  // }
+  // lire les données de la socket
+  int read_status = read(socketfd, data, sizeof(data));
+  if (read_status < 0)
+  {
+    perror("erreur lecture");
+    return -1;
+  }
 
-  // printf("Nom recu: %s\n", data);
+  printf("Nom recu: %s\n", data);
+
+  free(data);
 
   return 0;
 }
@@ -124,8 +120,6 @@ int envoie_couleurs(int socketfd, char *pathname)
   }
 
   free(json);
-
-  envoie_recois_message(socketfd);
 
   return 0;
 }
@@ -224,6 +218,8 @@ int main(int argc, char **argv)
   }
   else
   {
+    // envoyer et recevoir un nom
+    envoie_nom_client(socketfd);
     // envoyer et recevoir les couleurs prédominantes
     // d'une image au format BMP (argv[1])
     envoie_couleurs(socketfd, argv[1]);

@@ -77,7 +77,7 @@ void enregistre_data(char *data, char *pathname)
 int renvoie_message(int client_socket_fd, char *data)
 {
   int data_size = write(client_socket_fd, (void *)data, strlen(data));
-  
+
   if (data_size < 0)
   {
     perror("erreur ecriture");
@@ -109,7 +109,12 @@ int recois_envoie_message(int client_socket_fd)
   printf("Message recu: %s\n", data);
   char* message_type = getCode(data);
 
-  if (strcmp(message_type, "message") == 0)
+  if (strcmp(message_type, "nom") == 0)
+  {
+    renvoie_message(client_socket_fd, data);
+  }
+
+  else if (strcmp(message_type, "message") == 0)
   {
     char* valeurs = getValeurs(data);
     char* final = writeJSON(message_type, valeurs, false);
