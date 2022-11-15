@@ -52,18 +52,42 @@ char* writeJSON(char message_type[], char message[])
     free(tmp);
   }
 
-  else if (strcmp(message_type, "couleurs") == 0)
+  else if (strcmp(message_type, "couleurs") == 0 || strcmp(message_type, "balises") == 0)
   {
-    strcat(json, "\"");
-    strcat(json, message);
-    strcat(json, "\"");
-  }
+    int nb;
+    int conv = sscanf(message, "%d", &nb);
+    int nbDigit = getNbDigit(nb) + 1;
+    memmove(message, message + nbDigit, strlen(message));
 
-  else if (strcmp(message_type, "balises") == 0)
-  {
-    strcat(json, "\"");
-    strcat(json, message);
-    strcat(json, "\"");
+    if (conv == 1)
+    {
+      char* tmp = malloc(sizeof(char)*200);
+      sprintf(tmp, "%d", nb);
+      strcat(json, tmp);
+      free(tmp);
+      strcat(json, ",");
+
+      for (int i = 0; i < nb; i++)
+      {
+        char item[1024];
+        int itemLength = 1;
+        for (int l = 0; l < (int)strlen(message); l++)
+        {
+          if (message[l] == ',')
+          {
+            itemLength = l + 1;
+            break;
+          }
+          item[l] = message[l];
+        }
+        memmove(message, message + itemLength, strlen(message));
+        printf("item: %s\n", item);
+        strcat(json, "\"");
+        strcat(json, item);
+        strcat(json, "\"");
+        if (i < nb-1) strcat(json, ",");
+      }
+    }
   }
   
   strcat(json, "]}");
@@ -129,4 +153,14 @@ char* getValeurs(char json[])
     ind++;
   }
   return valeurs;
+}
+
+int getNbDigit(int number) {
+  int count = 0, nb = number;
+  while (nb != 0)
+  {
+    nb /= 10;
+    count++;
+  }
+  return count;
 }
