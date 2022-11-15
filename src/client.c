@@ -85,29 +85,26 @@ int envoie_nom_client(int socketfd)
     perror("erreur ecriture");
     exit(EXIT_FAILURE);
   }
+  free(data);
   
   // la réinitialisation de l'ensemble des données
-  memset(&data, 0, sizeof(data));
+  char res[1024];
 
   // lire les données de la socket
-  int read_status = read(socketfd, data, sizeof(data));
+  int read_status = read(socketfd, res, sizeof(res));
   if (read_status < 0)
   {
     perror("erreur lecture");
     return -1;
   }
 
-  printf("Nom recu: %s\n", data);
-
-  free(data);
-
+  printf("Nom recu: %s\n", res);
   return 0;
 }
 
 int envoie_couleurs(int socketfd, char *pathname)
 {
   char data[1024];
-  memset(data, 0, sizeof(data));
   analyse(pathname, data);
 
   char* json = convertToJson(data);
