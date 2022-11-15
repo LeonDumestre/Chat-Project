@@ -79,7 +79,7 @@ char* writeJSON(char message_type[], char message[], bool sendByClient)
             if (message[l] == ',') break;
             item[l] = message[l];
           }
-          if (strcmp(message_type, "couleurs") == 0 && (item[0] != '#' || (int)strlen(item) != 7))
+          if (item[0] != '#' || (strcmp(message_type, "couleurs") == 0 && (int)strlen(item) != 7))
           {
             free(json);
             return NULL;
