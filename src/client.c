@@ -114,13 +114,27 @@ int envoie_couleurs(int socketfd, char *pathname)
   char* json = convertToJson(data);
 
   int write_status = write(socketfd, json, strlen(json));
+
+  free(json);
+
   if (write_status < 0)
   {
     perror("erreur ecriture");
     exit(EXIT_FAILURE);
   }
 
-  free(json);
+  // la réinitialisation de l'ensemble des données
+  memset(data, 0, sizeof(data));
+
+  // lire les données de la socket
+  int read_status = read(socketfd, data, sizeof(data));
+  if (read_status < 0)
+  {
+    perror("erreur lecture");
+    return -1;
+  }
+
+  printf("Message recu: %s\n", data);
 
   envoie_recois_message(socketfd);
 

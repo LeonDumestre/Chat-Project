@@ -45,31 +45,14 @@ void plot(char *data)
 
 void enregistre_data(char *data, char *pathname)
 {
-  memmove(data, data + 10, strlen(data));
-
-  int line_count, last_index;
-  char line[1024];
-
-  sscanf(data, "%d", &line_count);
-  last_index = 0;
-
-  for (int i = 1; i < line_count + 1; i++)
-  {
-    char item[100];
-    sscanf(&data[last_index + i], "%s", item);
-    strcat(item, " ");
-    strcat(line, item);
-    last_index = last_index + strlen(item);
-  }
-
   FILE *f = fopen(pathname, "w");
   if (f == NULL)
   {
     printf("Error opening file!\n");
     exit(1);
   }
-  strcat(line, "\n");
-  fprintf(f, "%s", line);
+  strcat(data, "\n");
+  fprintf(f, "%s", data);
   fclose(f);
 }
 
@@ -137,10 +120,10 @@ int recois_envoie_message(int client_socket_fd)
   else if (strcmp(message_type, "couleurs") == 0)
   {
     char* valeurs = getValeurs(data);
-    //enregistre_data(valeurs, "couleurs.txt");
+    enregistre_data(valeurs, "couleurs.txt");
     plot(valeurs); 
     free(valeurs);
-    renvoie_message(client_socket_fd, valeurs);
+    renvoie_message(client_socket_fd, data);
   }
 
   else if (strcmp(message_type, "balises") == 0)
