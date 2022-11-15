@@ -86,7 +86,7 @@ void enregistre_data(char *data, char *pathname)
 int renvoie_message(int client_socket_fd, char *data)
 {
   int data_size = write(client_socket_fd, (void *)data, strlen(data));
-  free(data);
+  //free(data);
   if (data_size < 0)
   {
     perror("erreur ecriture");
@@ -141,16 +141,13 @@ int recois_envoie_message(int client_socket_fd)
     //enregistre_data(data, "couleurs.txt");
     //plot(data); 
     renvoie_message(client_socket_fd, data);
+    plot(data);
   }
 
   else if (strcmp(message_type, "balises") == 0)
   {
     enregistre_data(data, "balises.txt");
     renvoie_message(client_socket_fd, data);
-  }
-
-  else {
-    plot(data);
   }
 
   free(message_type);

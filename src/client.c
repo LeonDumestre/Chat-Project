@@ -18,7 +18,7 @@ void analyse(char *pathname, char *data)
   couleur_compteur *cc = analyse_bmp_image(pathname);
 
   int count;
-  strcpy(data, "couleurs: ");
+  strcpy(data, "/c ");
   char temp_string[10] = "10,";
   if (cc->size < 10)
   {
@@ -117,15 +117,19 @@ int envoie_couleurs(int socketfd, char *pathname)
   memset(data, 0, sizeof(data));
   analyse(pathname, data);
 
-  int write_status = write(socketfd, data, strlen(data));
+  char* json = convertToJson(data);
+
+  int write_status = write(socketfd, json, strlen(json));
   if (write_status < 0)
   {
     perror("erreur ecriture");
     exit(EXIT_FAILURE);
   }
 
+  free(json);
+
   envoie_recois_message(socketfd);
-  
+
   return 0;
 }
 
