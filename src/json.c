@@ -93,6 +93,11 @@ char* writeJSON(char message_type[], char message[], bool sendByClient)
           if (i < nb-1) strcat(json, ",");
           free(item);
         }
+        memmove(message, message + itemLength, strlen(message));
+        strcat(json, "\"");
+        strcat(json, item);
+        strcat(json, "\"");
+        if (i < nb-1) strcat(json, ",");
       }
       else
       {

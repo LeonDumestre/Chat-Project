@@ -16,9 +16,7 @@ void plot(char *data)
 {
   // Extraire le compteur et les couleurs RGB
   FILE *p = popen("gnuplot -persist", "w");
-  printf("Plot\n");
   int count = 0;
-  int n;
   char *saveptr = NULL;
   char *str = data;
   fprintf(p, "set xrange [-15:15]\n");
@@ -34,13 +32,7 @@ void plot(char *data)
       break;
     }
     str = NULL;
-    printf("%d: %s\n", count, token);
-    if (count == 1)
-    {
-      n = atoi(token);
-      printf("n = %d\n", n);
-    }
-    else
+    if (count != 1)
     {
       // Le numéro 36, parceque 360° (cercle) / 10 couleurs = 36
       fprintf(p, "0 0 10 %d %d 0x%s\n", (count - 1) * 36, count * 36, token + 1);
@@ -48,7 +40,6 @@ void plot(char *data)
     count++;
   }
   fprintf(p, "e\n");
-  printf("Plot: FIN\n");
   pclose(p);
 }
 
@@ -86,6 +77,7 @@ void enregistre_data(char *data, char *pathname)
 int renvoie_message(int client_socket_fd, char *data)
 {
   int data_size = write(client_socket_fd, (void *)data, strlen(data));
+  
   if (data_size < 0)
   {
     perror("erreur ecriture");
@@ -141,7 +133,7 @@ int recois_envoie_message(int client_socket_fd)
   {
     char* valeurs = getValeurs(data);
     //enregistre_data(valeurs, "couleurs.txt");
-    //plot(valeurs); 
+    plot(valeurs); 
     free(valeurs);
     renvoie_message(client_socket_fd, data);
   }
@@ -152,10 +144,6 @@ int recois_envoie_message(int client_socket_fd)
     enregistre_data(valeurs, "balises.txt");
     free(valeurs);
     renvoie_message(client_socket_fd, data);
-  }
-
-  else {
-    plot(data);
   }
 
   free(message_type);
