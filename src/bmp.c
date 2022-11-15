@@ -25,9 +25,8 @@
  */
 couleur_compteur *analyse_bmp_image(char *nom_de_fichier)
 {
-
   couleur_compteur *cc = NULL;
-
+  
   // l'ouverture du fichier pour la lecture
   int fd = open(nom_de_fichier, O_RDONLY);
   printf("%s", nom_de_fichier);

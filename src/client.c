@@ -94,7 +94,7 @@ int envoie_nom_client(int socketfd)
   }
   free(data);
 
-// Y avait ça de base mais je suis pas sûr de l'utilité
+  // Y avait ça de base mais je suis pas sûr de l'utilité
   // la réinitialisation de l'ensemble des données
   // memset(data, 0, sizeof(data));
 

@@ -138,7 +138,8 @@ int recois_envoie_message(int client_socket_fd)
 
   else if (strcmp(message_type, "couleurs") == 0)
   {
-    enregistre_data(data, "couleurs.txt");
+    //enregistre_data(data, "couleurs.txt");
+    //plot(data); 
     renvoie_message(client_socket_fd, data);
   }
 
@@ -148,8 +149,7 @@ int recois_envoie_message(int client_socket_fd)
     renvoie_message(client_socket_fd, data);
   }
 
-  else if (strcmp(message_type, "image") == 0)
-  {
+  else {
     plot(data);
   }
 
