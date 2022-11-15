@@ -53,22 +53,19 @@ char* convertToJson(char message[])
     memmove(message, message + 3, strlen(message));
     switch (letter)
     {
+      case 'm':;
+        break;
       case 'n':;
-        char op;
-        float N1, N2;
-        int conv = sscanf(message, "%c %f %f", &op, &N1, &N2);
-        printf("Conv: %d\n", conv);
-        if (conv == 3 && (op == '+' || op == '-' || op == '*' || op == '/' || op == '%' || op == '&' || op == '|' || op == '~'))
-        {
-          strcpy(message_type, "calcule");
-        }
+        strcpy(message_type, "calcule");
         break;
       case 'c':
         strcpy(message_type, "couleurs");
         break;
-
       case 'b':
         strcpy(message_type, "balises");
+        break;
+      default:
+        return NULL;
         break;
     }
   }
@@ -144,26 +141,32 @@ int envoie_recois_message(int socketfd)
   if (message[(int)strlen(message)-1] == '\n') message[(int)strlen(message)-1] = '\0';
   char* json = convertToJson(message);
 
-  int write_status = write(socketfd, json, strlen(json));
-  free(json);
-  if (write_status < 0)
+  if (json != NULL)
   {
-    perror("erreur ecriture");
-    exit(EXIT_FAILURE);
+    int write_status = write(socketfd, json, strlen(json));
+    free(json);
+    if (write_status < 0)
+    {
+      perror("erreur ecriture");
+      exit(EXIT_FAILURE);
+    }
+
+    // la réinitialisation de l'ensemble des données
+    memset(data, 0, sizeof(data));
+
+    // lire les données de la socket
+    int read_status = read(socketfd, data, sizeof(data));
+    if (read_status < 0)
+    {
+      perror("erreur lecture");
+      return -1;
+    }
+
+    printf("Message recu: %s\n", data);
   }
-
-  // la réinitialisation de l'ensemble des données
-  memset(data, 0, sizeof(data));
-
-  // lire les données de la socket
-  int read_status = read(socketfd, data, sizeof(data));
-  if (read_status < 0)
-  {
-    perror("erreur lecture");
-    return -1;
+  else {
+    printf("La commande n'est pas valide\n");
   }
-
-  printf("Message recu: %s\n", data);
 
   envoie_recois_message(socketfd);
 

@@ -1,16 +1,10 @@
-/*
- * SPDX-FileCopyrightText: 2022 John Samuel
- *
- * SPDX-License-Identifier: GPL-3.0-or-later
- *
- */
-
 #include "json.h"
 
 char* writeJSON(char message_type[], char message[])
 {
-  char* json = malloc(sizeof(char) * 2048);
+  if (strlen(message_type) == 0 || strlen(message) == 0) return NULL;
 
+  char* json = malloc(sizeof(char) * 2048);
   strcpy(json, "{\"code\":\"");
   strcat(json, message_type);
   strcat(json, "\",\"valeurs\":[");
@@ -22,7 +16,7 @@ char* writeJSON(char message_type[], char message[])
     if (message[(int)strlen(message)-1] != '"') strcat(json, "\"");
   }
 
-  else if (strcmp(message_type, "calcule") == 0)
+  if (strcmp(message_type, "calcule") == 0)
   {
     char op;
     float F1, F2;
@@ -32,17 +26,24 @@ char* writeJSON(char message_type[], char message[])
     //Message du client ou Réponse du serveur si ~
     if (conv == 3)
     {
-      strcat(json, "\"");
-      json[strlen(json)] = op;
-      json[strlen(json)] = '\0';
-      strcat(json, "\",");
+      if (op == '+' || op == '-' || op == '*' || op == '/' || op == '%' || op == '&' || op == '|' || op == '~')
+      {
+        strcat(json, "\"");
+        json[strlen(json)] = op;
+        json[strlen(json)] = '\0';
+        strcat(json, "\",");
 
-      sprintf(tmp, "%f", F1);
-      strcat(json, tmp);
-      strcat(json, ",");
+        sprintf(tmp, "%f", F1);
+        strcat(json, tmp);
+        strcat(json, ",");
 
-      sprintf(tmp, "%f", F2);
-      strcat(json, tmp);
+        sprintf(tmp, "%f", F2);
+        strcat(json, tmp);
+      }
+      else {
+        free(json);
+        return NULL;
+      }
     }
     //Réponse du serveur
     else
@@ -69,30 +70,38 @@ char* writeJSON(char message_type[], char message[])
 
       for (int i = 0; i < nb; i++)
       {
-        char item[1024];
-        int itemLength = 1;
+        char* item = malloc(sizeof(char) * 1024);
         for (int l = 0; l < (int)strlen(message); l++)
         {
-          if (message[l] == ',')
-          {
-            itemLength = l + 1;
-            break;
-          }
+          if (message[l] == ',') break;
           item[l] = message[l];
         }
-        memmove(message, message + itemLength, strlen(message));
+        if (strcmp(message_type, "couleurs") == 0 && (item[0] != '#' || (int)strlen(item) != 7))
+        {
+          free(json);
+          return NULL;
+        }
+
+        memmove(message, message + (int)strlen(item) + 1, strlen(message));
         printf("item: %s\n", item);
         strcat(json, "\"");
         strcat(json, item);
         strcat(json, "\"");
         if (i < nb-1) strcat(json, ",");
+        free(item);
       }
+    }
+    else
+    {
+      free(json);
+      return NULL;
     }
   }
   
   strcat(json, "]}");
   return json;
 }
+
 
 char* getCode(char json[])
 {
@@ -106,10 +115,7 @@ char* getCode(char json[])
   {
     if (isCode)
     {
-      if (str[ind] == '"') {
-        break;
-      }
-
+      if (str[ind] == '"') break;
       code[indCode] = str[ind];
       indCode++;
     }
@@ -124,12 +130,13 @@ char* getCode(char json[])
   return code;
 }
 
+
 char* getValeurs(char json[])
 {
-  char str[2048];
+  char str[1024];
   strcpy(str, json);
 
-  char* valeurs = malloc(sizeof(char) * 10);
+  char* valeurs = malloc(sizeof(char) * 1024);
   int ind = 0, indValeurs = 0, isValeurs = 0;
 
   while (ind < (int)strlen(str))
