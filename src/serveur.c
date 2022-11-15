@@ -140,7 +140,7 @@ int recois_envoie_message(int client_socket_fd)
     //enregistre_data(valeurs, "couleurs.txt");
     plot(valeurs); 
     free(valeurs);
-    renvoie_message(client_socket_fd, valeurs);
+    renvoie_message(client_socket_fd, data);
   }
 
   else if (strcmp(message_type, "balises") == 0)
