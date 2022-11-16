@@ -191,6 +191,7 @@ char* getValeurs(char json[])
       if (str[ind] == '"')
       {
         ind++;
+        valeurs[indValeurs + 1] = '\0';
         continue;
       }
       valeurs[indValeurs] = str[ind];
