@@ -19,8 +19,8 @@ void plot(char *data, int nb_couleurs)
   int count = 0;
   char *saveptr = NULL;
   char *str = data;
-  fprintf(p, "set xrange [-15:15]\n");
-  fprintf(p, "set yrange [-15:15]\n");
+  fprintf(p, "set xrange [-1.5 * %d:1.5 * %d]\n", nb_couleurs, nb_couleurs);
+  fprintf(p, "set yrange [-1.5 * %d:1.5 * %d]\n", nb_couleurs, nb_couleurs);
   fprintf(p, "set style fill transparent solid 0.9 noborder\n");
   fprintf(p, "set title 'Top %d colors'\n", nb_couleurs);
   fprintf(p, "plot '-' with circles lc rgbcolor variable\n");
