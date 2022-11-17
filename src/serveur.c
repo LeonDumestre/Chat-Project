@@ -32,10 +32,7 @@ void plot(char *data, int nb_couleurs)
       break;
     }
     str = NULL;
-    if (count != 1)
-    {
-      fprintf(p, "0 0 %d %d %d 0x%s\n", nb_couleurs, (count - 1) * (360 / nb_couleurs), count * (360 / nb_couleurs), token + 1);
-    }
+    fprintf(p, "0 0 %d %d %d 0x%s\n", nb_couleurs, (count - 1) * (360 / nb_couleurs), count * (360 / nb_couleurs), token + 1);
     count++;
   }
   fprintf(p, "e\n");
@@ -123,7 +120,7 @@ int recois_envoie_message(int client_socket_fd)
     int nb;
     sscanf(valeurs, "%d", &nb);
     int nbDigit = getNbDigit(nb) + 1;
-    memmove(valeurs, valeurs + nbDigit, strlen(valeurs));;
+    memmove(valeurs, valeurs + nbDigit, strlen(valeurs));
 
     enregistre_data(valeurs, "couleurs.txt");
     plot(valeurs, nb);
