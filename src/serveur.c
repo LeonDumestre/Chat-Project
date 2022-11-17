@@ -32,18 +32,20 @@ void plot(char *data, int nb_couleurs)
       break;
     }
     str = NULL;
-    if (count != 1)
-    {
-      fprintf(p, "0 0 %d %d %d 0x%s\n", nb_couleurs, (count - 1) * (360 / nb_couleurs), count * (360 / nb_couleurs), token + 1);
-    }
+    fprintf(p, "0 0 %d %d %d 0x%s\n", nb_couleurs, (count - 1) * (360 / nb_couleurs), count * (360 / nb_couleurs), token + 1);
     count++;
   }
   fprintf(p, "e\n");
   pclose(p);
 }
 
+/*
+ * Fonction d'enregistrement de données dans un fichier.
+ * Arguments: les données à enregistrer, le chemin d'accès du fichier.
+ */
 void enregistre_data(char *data, char *pathname)
 {
+  // Remplissage du fichier avec les données
   FILE *f = fopen(pathname, "a");
   if (f == NULL)
   {
@@ -55,9 +57,13 @@ void enregistre_data(char *data, char *pathname)
   fclose(f);
 }
 
-/* renvoyer un message (*data) au client (client_socket_fd) */
+/*
+ * Fonction de renvoi de données au client.
+ * Arguments: l'identifiant du client, les données à envoyer.
+ */
 int renvoie_message(int client_socket_fd, char *data)
 {
+  // Envoi des données au client
   int data_size = write(client_socket_fd, (void *)data, strlen(data));
 
   if (data_size < 0)
@@ -68,18 +74,18 @@ int renvoie_message(int client_socket_fd, char *data)
   return (EXIT_SUCCESS);
 }
 
-/* accepter la nouvelle connection d'un client et lire les données
- * envoyées par le client. En suite, le serveur envoie un message
- * en retour
+/*
+ * Fonction de réception et d'envoi de données au client.
+ * Arguments: l'identifiant du client.
  */
 int recois_envoie_message(int client_socket_fd)
 {
   char data[2048];
 
-  // la réinitialisation de l'ensemble des données
+  // Réinitialisation de la variable data
   memset(data, 0, sizeof(data));
 
-  // lecture de données envoyées par un client
+  // Réception des données du client
   int data_size = read(client_socket_fd, (void *)data, sizeof(data));
 
   if (data_size < 0)
@@ -89,8 +95,11 @@ int recois_envoie_message(int client_socket_fd)
   }
 
   printf("Message recu: %s\n", data);
+
+  // Récuération du flag
   char* message_type = getCode(data);
 
+  // Traitement des données reçues en fonction du flag
   if (strcmp(message_type, "nom") == 0)
   {
     renvoie_message(client_socket_fd, data);
@@ -98,19 +107,23 @@ int recois_envoie_message(int client_socket_fd)
 
   else if (strcmp(message_type, "message") == 0)
   {
-    char* valeurs = getValeurs(data);
-    char* final = writeJSON(message_type, valeurs, false);
+    char* valeurs = getValeurs(data); // Récupération des valeurs
+    char* final = writeJSON(message_type, valeurs, false); // Création du JSON
+
     renvoie_message(client_socket_fd, final);
+
     free(valeurs);
     free(final);
   }
 
   else if (strcmp(message_type, "calcule") == 0)
   {
-    char* valeurs = getValeurs(data);
-    char* res = calcule(valeurs);
-    char* final = writeJSON(message_type, res, false);
+    char* valeurs = getValeurs(data); // Récupération des valeurs
+    char* res = calcule(valeurs); // Calcul du résultat
+    char* final = writeJSON(message_type, res, false); // Création du JSON
+
     renvoie_message(client_socket_fd, final);
+
     free(valeurs);
     free(res);
     free(final);
@@ -118,25 +131,33 @@ int recois_envoie_message(int client_socket_fd)
 
   else if (strcmp(message_type, "couleurs") == 0)
   {
-    char* valeurs = getValeurs(data);
+    int nb_couleurs;
+    char* valeurs = getValeurs(data); // Récupération des valeurs
+    sscanf(valeurs, "%d", &nb_couleurs); // Récupération du nombre de couleurs
+    int nbDigit = getNbDigit(nb_couleurs) + 1; // Récupération du nombre de chiffres du nombre de couleurs
 
-    int nb;
-    sscanf(valeurs, "%d", &nb);
-    int nbDigit = getNbDigit(nb) + 1;
-    memmove(valeurs, valeurs + nbDigit, strlen(valeurs));;
+    memmove(valeurs, valeurs + nbDigit, strlen(valeurs)); // Suppression du nombre de couleurs dans les valeurs
 
     enregistre_data(valeurs, "couleurs.txt");
-    plot(valeurs, nb);
-    free(valeurs);
+    plot(valeurs, nb_couleurs);    
     renvoie_message(client_socket_fd, data);
+
+    free(valeurs);
   }
 
   else if (strcmp(message_type, "balises") == 0)
   {
-    char* valeurs = getValeurs(data);
+    int nb_balises;
+    char* valeurs = getValeurs(data); // Récupération des valeurs
+    sscanf(valeurs, "%d", &nb_balises); // Récupération du nombre de balises
+    int nbDigit = getNbDigit(nb_balises) + 1; // Récupération du nombre de chiffres du nombre de balises
+
+    memmove(valeurs, valeurs + nbDigit, strlen(valeurs)); // Suppression du nombre de balises dans les valeurs
+
     enregistre_data(valeurs, "balises.txt");
-    free(valeurs);
     renvoie_message(client_socket_fd, data);
+
+    free(valeurs);
   }
 
   free(message_type);
