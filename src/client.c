@@ -12,6 +12,10 @@
 
 #include "client.h"
 
+/*
+ * Fonction d'analyse d'une image.
+ * Arguments: le chemin d'accès à l'image, la variable à remplir, le nombre de couleurs à analyser.
+ */
 void analyse(char *pathname, char *data, int nb_couleurs)
 {
   // compte de couleurs
@@ -44,6 +48,10 @@ void analyse(char *pathname, char *data, int nb_couleurs)
   }
 }
 
+/*
+ * Fonction de conversion au format JSON
+ * Argument: les données à convertir.
+ */
 char* convertToJson(char message[])
 {
   // Si il n'y a pas de commande /, c'est un message par défaut
@@ -78,12 +86,18 @@ char* convertToJson(char message[])
   return json;
 }
 
+/*
+ * Fonction d'envoie et de réception du nom du client.
+ * Arguments: l'identifiant de la socket.
+ */
 int envoie_nom_client(int socketfd)
 {
+  // Réception du nom du client
   char nom[25];
   gethostname(nom, 25);
   char* data = writeJSON("nom", nom, true);
 
+  // Envoie du nom du client
   int write_status = write(socketfd, data, strlen(data));
   if (write_status < 0)
   {
@@ -92,10 +106,10 @@ int envoie_nom_client(int socketfd)
   }
   free(data);
   
-  // la réinitialisation de l'ensemble des données
+  // Résultat de l'envoie
   char res[1024];
 
-  // lire les données de la socket
+  // Réception du résultat
   int read_status = read(socketfd, res, sizeof(res));
   if (read_status < 0)
   {
@@ -107,15 +121,19 @@ int envoie_nom_client(int socketfd)
   return 0;
 }
 
+/*
+ * Fonction d'envoi et de réception des couleurs d'une image
+ * Il faut un argument : l'identifiant de la socket
+ */
 int envoie_couleurs(int socketfd, char *pathname, int nb_couleurs)
 {
+  // Analyse de l'image
   char data[1024];
   analyse(pathname, data, nb_couleurs);
 
+  // Envoie des couleurs
   char* json = convertToJson(data);
-
   int write_status = write(socketfd, json, strlen(json));
-
   free(json);
 
   if (write_status < 0)
@@ -124,10 +142,10 @@ int envoie_couleurs(int socketfd, char *pathname, int nb_couleurs)
     exit(EXIT_FAILURE);
   }
 
-  // la réinitialisation de l'ensemble des données
+  // Réinitialisation de la variable data
   memset(data, 0, sizeof(data));
 
-  // lire les données de la socket
+  // Résultat de l'envoie
   int read_status = read(socketfd, data, sizeof(data));
   if (read_status < 0)
   {
@@ -137,6 +155,7 @@ int envoie_couleurs(int socketfd, char *pathname, int nb_couleurs)
 
   printf("Message recu: %s\n", data);
 
+  // Appel de la fonction pour envoyer un message
   envoie_recois_message(socketfd);
 
   return 0;
@@ -144,7 +163,7 @@ int envoie_couleurs(int socketfd, char *pathname, int nb_couleurs)
 
 /*
  * Fonction d'envoi et de réception de messages
- * Il faut un argument : l'identifiant de la socket
+ * Argument : l'identifiant de la socket
  */
 int envoie_recois_message(int socketfd)
 {
@@ -154,7 +173,6 @@ int envoie_recois_message(int socketfd)
 
   // Demandez à l'utilisateur d'entrer un message
   char message[1024];
-
   printf("Votre message (max 1000 caracteres): ");
   fgets(message, sizeof(message), stdin);
 
@@ -164,6 +182,7 @@ int envoie_recois_message(int socketfd)
 
   if (json != NULL)
   {
+    // Envoie du message
     int write_status = write(socketfd, json, strlen(json));
     free(json);
     if (write_status < 0)
@@ -172,10 +191,10 @@ int envoie_recois_message(int socketfd)
       exit(EXIT_FAILURE);
     }
 
-    // la réinitialisation de l'ensemble des données
+    // Réinitialisation de la variable data
     memset(data, 0, sizeof(data));
 
-    // lire les données de la socket
+    // Résultat de l'envoie
     int read_status = read(socketfd, data, sizeof(data));
     if (read_status < 0)
     {
@@ -189,6 +208,7 @@ int envoie_recois_message(int socketfd)
     printf("La commande n'est pas valide\n");
   }
 
+  // Appel de la fonction pour envoyer un nouveau message
   envoie_recois_message(socketfd);
 
   return 0;
