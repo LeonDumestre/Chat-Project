@@ -59,3 +59,9 @@ La commande `balises` doit contenir le nombre de balises a ajouté puis chaque b
 ```
 /b 2,#bonjour,#arbre8
 ```
+
+### Images
+Au lancement du programme côté Client, il est possible de charger une image en spécifiant son chemin. Par exemple :
+```
+./client images/image.bmp
+```
