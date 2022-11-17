@@ -130,9 +130,14 @@ int recois_envoie_message(int client_socket_fd)
 
   else if (strcmp(message_type, "balises") == 0)
   {
-    char* valeurs = getValeurs(data);
+    int nb_balises;
+    char* valeurs = getValeurs(data); // Récupération des valeurs
+    sscanf(valeurs, "%d", &nb_balises); // Récupération du nombre de balises
+    int nbDigit = getNbDigit(nb_balises) + 1; // Récupération du nombre de chiffres du nombre de balises
+
+    memmove(valeurs, valeurs + nbDigit, strlen(valeurs)); // Suppression du nombre de balises dans les valeurs
+
     enregistre_data(valeurs, "balises.txt");
-    free(valeurs);
     renvoie_message(client_socket_fd, data);
   }
 
