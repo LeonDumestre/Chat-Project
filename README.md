@@ -13,7 +13,9 @@ Pour le moment nous avons réalisé l'intégralité des tâches 1 et 2 visibles 
 
 ## Commandes disponibles
 
-Les messages écrient par l'utilisateur côté Client sont envoyés au Serveur dans le format JSON. Par exemple :
+Les messages écrient par l'utilisateur côté Client sont envoyés au Serveur dans le format JSON. 
+
+Par exemple :
 
 ```json
 {
@@ -33,7 +35,9 @@ Il existe actuellement 4 commandes différentes utilisables grâce à un slash a
 
 ### Message
 
-La commande `message` peut contenir un texte avec n'importe quel caractère. Par exemple :
+La commande `message` peut contenir un texte avec n'importe quel caractère. 
+
+Par exemple :
 ```
 bonjour
 /m bonjour
@@ -41,27 +45,39 @@ bonjour
 
 ### Calcule
 
-LA commande `calcule` doit contenir un opérateur (`+ - * / & | ~`) puis de 2 nombres avec ou sans décimales. Tout est séparé par un espace. Par exemple :
+LA commande `calcule` doit contenir un opérateur (`+ - * / & | ~`) puis de 2 nombres avec ou sans décimales. Tout est séparé par un espace. 
+
+Par exemple :
 ```
 /n + 51 2.5
 ```
 
+Les opérateurs suivant sont disponibles : `+ - * / & | ~` pour les opérations de base avec 2 nombres.
+
+Les opérateurs suivants sont disponibles : `avg min max gap` pour les opérations de base pour plusieurs nombres (<100).
+
 ### Couleurs
 
-La commande `couleurs` doit contenir le nombre de couleurs a ajouté puis chaque couleur contenant un `#` puis 6 caractères. Tout est séparé par une virgule. Par exemple :
+La commande `couleurs` doit contenir le nombre de couleurs a ajouté puis chaque couleur contenant un `#` puis 6 caractères. Tout est séparé par une virgule. 
+
+Par exemple :
 ```
 /c 3,#123456,#ABCDEF,#123ABC 
 ```
 
 ### Balises
 
-La commande `balises` doit contenir le nombre de balises a ajouté puis chaque balise contenant un `#` puis des caractères. Tout est séparé par une virgule. Par exemple :
+La commande `balises` doit contenir le nombre de balises a ajouté puis chaque balise contenant un `#` puis des caractères. Tout est séparé par une virgule. 
+
+Par exemple :
 ```
 /b 2,#bonjour,#arbre8
 ```
 
 ### Images
-Au lancement du programme côté Client, il est possible de charger une image en spécifiant son chemin. Par exemple :
+Au lancement du programme côté Client, il est possible de charger une image en spécifiant son chemin. 
+
+Par exemple :
 ```
 ./client images/image.bmp
 ```
