@@ -31,17 +31,17 @@ char* writeJSON(char message_type[], char message[], bool sendByClient)
     // Message du client
     if (sendByClient)
     {
-      char op;
+      char* op = malloc(sizeof(char) * 2);
       float F1, F2;
-      int conv = sscanf(message, "%c %f %f", &op, &F1, &F2);
+      int conv = sscanf(message, "%s %f %f", op, &F1, &F2);
 
       // Vérifie si message contient 1 opérateur valide et 2 nombres (float)
-      if (conv == 3 || (op == '+' || op == '-' || op == '*' || op == '/' || op == '%' || op == '&' || op == '|' || op == '~'))
+      if (conv == 3 && (strcmp(op, "+") == 0 || strcmp(op, "-") == 0 || strcmp(op, "*") == 0 || strcmp(op, "/") == 0 || strcmp(op, "%") == 0 || strcmp(op, "&") == 0 || strcmp(op, "|") == 0 || strcmp(op, "~") == 0))
       {
         char* tmp = malloc(sizeof(char)*200);
         // Copie l'opérateur entre guillemets
         strcat(json, "\"");
-        json[strlen(json)] = op;
+        strcat(json, op);
         json[strlen(json)] = '\0';
         strcat(json, "\",");
 
@@ -54,11 +54,33 @@ char* writeJSON(char message_type[], char message[], bool sendByClient)
         strcat(json, tmp);
         free(tmp);
       }
+      else if (strcmp(op, "avg") == 0 || strcmp(op, "min") == 0 || strcmp(op, "max") == 0 || strcmp(op, "gap") == 0)
+      {
+        // Copie l'opérateur entre guillemets
+        strcat(json, "\"");
+        strcat(json, op);
+        json[strlen(json)] = '\0';
+        strcat(json, "\",");
+
+        //Copie des nombres
+        char* tmp = malloc(sizeof(char)*200);
+        char* token = strtok(message, " ");
+        token = strtok(NULL, " ");
+        while (token != NULL)
+        {
+          sprintf(tmp, "%f", atof(token));
+          strcat(json, tmp);
+          strcat(json, ",");
+          token = strtok(NULL, " ");
+        }
+        free(tmp);
+      }
       // Si message ne contient pas 1 opérateur valide et 2 nombres (float)
       else {
         free(json);
         return NULL;
       }
+      free(op);
     }
     // Réponse du serveur
     else {

@@ -13,6 +13,9 @@ DEBUG ?= -ggdb3
 # Thread
 THREAD ?= -lpthread
 
+# Math.h
+MATH ?= -lm
+
 .SUFFIXES: .c .o
 
 SERVER = serveur
@@ -22,11 +25,11 @@ all: $(SERVER) $(CLIENT)
 
 # Création d'un exécutable pour le côté serveur
 $(SERVER): $(SOBJS)
-	$(CC) $(DEBUG) $(CFLAGS) $(THREAD) -o $(SERVER) $(SOBJS)
+	$(CC) $(DEBUG) $(CFLAGS) $(THREAD) -o $(SERVER) $(SOBJS) $(MATH)
 
 # Création d'un exécutable pour le côté client
 $(CLIENT): $(COBJS)
-	$(CC) $(DEBUG) $(CFLAGS) -o $(CLIENT) $(COBJS)
+	$(CC) $(DEBUG) $(CFLAGS) -o $(CLIENT) $(COBJS) $(MATH)
 
 # Compilation du code sans création d'un exécutable
 .c.o: 
