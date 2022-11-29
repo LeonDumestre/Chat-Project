@@ -45,7 +45,7 @@ bonjour
 
 ### Calcule
 
-LA commande `calcule` doit contenir un opérateur (`+ - * / & | ~`) puis de 2 nombres avec ou sans décimales. Tout est séparé par un espace. 
+La commande `calcule` doit contenir un opérateur (`+ - * / & | ~`) puis de 2 nombres avec ou sans décimales. Tout est séparé par un espace. 
 
 Par exemple :
 ```
@@ -54,7 +54,7 @@ Par exemple :
 
 Les opérateurs suivant sont disponibles : `+ - * / & | ~` pour les opérations de base avec 2 nombres.
 
-Les opérateurs suivants sont disponibles : `avg min max gap` pour les opérations de base pour plusieurs nombres (<100).
+Les opérateurs suivants sont disponibles : `avg min max gap` pour les opérations statistiques pour plage de données (<100).
 
 ### Couleurs
 
@@ -65,6 +65,8 @@ Par exemple :
 /c 3,#123456,#ABCDEF,#123ABC 
 ```
 
+Si aucunes couleurs n'est spécifiée, la commande renvoie une erreur.
+
 ### Balises
 
 La commande `balises` doit contenir le nombre de balises a ajouté puis chaque balise contenant un `#` puis des caractères. Tout est séparé par une virgule. 
@@ -74,10 +76,16 @@ Par exemple :
 /b 2,#bonjour,#arbre8
 ```
 
+Si aucunes balises n'est spécifiée, la commande renvoie une erreur.
+
 ### Images
 Au lancement du programme côté Client, il est possible de charger une image en spécifiant son chemin. 
+
+L'utilisateur est invité à rentrer un nombre de couleurs à analyser.
 
 Par exemple :
 ```
 ./client images/image.bmp
 ```
+
+Si le nombre de couleurs n'est pas spécifié ou bien qu'il est inférieur à 1 ou supérieur à 30, le nombre de couleurs par défaut est de 10.
