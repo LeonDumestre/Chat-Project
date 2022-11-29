@@ -43,6 +43,8 @@ bonjour
 /m bonjour
 ```
 
+Par défaut si l'utilisateur ne met pas de slash, le message est envoyé en tant que message.
+
 ### Calcule
 
 La commande `calcule` doit contenir un opérateur (`+ - * / & | ~`) puis de 2 nombres avec ou sans décimales. Tout est séparé par un espace. 
