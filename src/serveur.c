@@ -96,6 +96,12 @@ int recois_envoie_message(int client_socket_fd, char* nom)
     perror("erreur lecture");
     return (EXIT_FAILURE);
   }
+  // Le client a fermé la connexion
+  else if (data_size == 0)
+  {
+    printf("Client %s deconnecté !\n", nom);
+    return (EXIT_FAILURE);
+  }
   
   // Récuération du flag
   char* message_type = getCode(data);
@@ -182,13 +188,15 @@ int thread_client(int client_socket_fd)
 
   while(true)
   {
-    recois_envoie_message(client_socket_fd, nom);
+    int exit = recois_envoie_message(client_socket_fd, nom);
+    if (exit == EXIT_FAILURE)
+    {
+      break;
+    }
   }
 
-  // Fermeture de la connexion avec le client
-  printf("Déconnexion du client %s\n", nom);
   free(nom);
-
+  // Fermeture de la connexion avec le client
   close(client_socket_fd);
   pthread_mutex_lock(&mutex);
   nb_clients--;
