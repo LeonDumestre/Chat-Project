@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include "validation.h"
 
 char* writeJSON(char message_type[], char message[], bool sendByServer);
 

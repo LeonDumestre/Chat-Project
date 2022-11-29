@@ -1,8 +1,8 @@
 CC ?= gcc
 
 # Modifiez les deux lignes suivantes et ajoutez de nouveaux fichiers selon vos besoins
-COBJS ?= client.o bmp.o couleur.o json.o operations.o
-SOBJS ?= serveur.o json.o operations.o
+COBJS ?= client.o bmp.o couleur.o json.o operations.o validation.o
+SOBJS ?= serveur.o json.o operations.o validation.o
 
 # Avertissements
 CFLAGS ?= -Wall -Wextra

@@ -152,6 +152,8 @@ char* writeJSON(char message_type[], char message[], bool sendByClient)
   }
   
   strcat(json, "]}");
+
+  if (!validation_JSON(json)) return NULL;
   return json;
 }
 
