@@ -11,7 +11,7 @@ CFLAGS ?= -Wall -Wextra
 DEBUG ?= -ggdb3
 
 # Thread
-THREAD ?= -lpthread
+THREAD ?= -pthread
 
 # Math.h
 MATH ?= -lm
