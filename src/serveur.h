@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include "json.h"
 #include "operations.h"
@@ -36,6 +37,7 @@
 void plot(char *data, int nb_couleurs);
 void enregistre_data(char *data, char *pathname);
 int renvoie_message(int client_socket_fd, char *data);
-int recois_envoie_message(int client_socket_fd);
+int recois_envoie_message(int client_socket_fd, char *nom);
+int thread_client(int client_socket_fd);
 
 #endif

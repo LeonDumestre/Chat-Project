@@ -12,6 +12,9 @@
 
 #include "serveur.h"
 
+#define MAX_CLIENTS 5
+int nb_clients = 0;
+
 void plot(char *data, int nb_couleurs)
 {
   // Extraire le compteur et les couleurs RGB
@@ -78,7 +81,7 @@ int renvoie_message(int client_socket_fd, char *data)
  * Fonction de réception et d'envoi de données au client.
  * Arguments: l'identifiant du client.
  */
-int recois_envoie_message(int client_socket_fd)
+int recois_envoie_message(int client_socket_fd, char* nom)
 {
   char data[2048];
 
@@ -93,82 +96,112 @@ int recois_envoie_message(int client_socket_fd)
     perror("erreur lecture");
     return (EXIT_FAILURE);
   }
-
-  printf("Message recu: %s\n", data);
-
+  
   // Récuération du flag
   char* message_type = getCode(data);
 
   // Traitement des données reçues en fonction du flag
   if (strcmp(message_type, "nom") == 0)
   {
+    printf("Message reçu: %s\n", data);
+    strcat(nom, getValeurs(data));
     renvoie_message(client_socket_fd, data);
   }
 
-  else if (strcmp(message_type, "message") == 0)
+  else
   {
-    char* valeurs = getValeurs(data); // Récupération des valeurs
-    char* final = writeJSON(message_type, valeurs, false); // Création du JSON
+    printf("%s: %s\n", nom, data);
+    if (strcmp(message_type, "message") == 0)
+    {
+      char* valeurs = getValeurs(data); // Récupération des valeurs
+      char* final = writeJSON(message_type, valeurs, false); // Création du JSON
 
-    renvoie_message(client_socket_fd, final);
+      renvoie_message(client_socket_fd, final);
 
-    free(valeurs);
-    free(final);
-  }
+      free(valeurs);
+      free(final);
+    }
 
-  else if (strcmp(message_type, "calcule") == 0)
-  {
-    char* valeurs = getValeurs(data); // Récupération des valeurs
-    char* res = calcule(valeurs); // Calcul du résultat
-    char* final = writeJSON(message_type, res, false); // Création du JSON
+    else if (strcmp(message_type, "calcule") == 0)
+    {
+      char* valeurs = getValeurs(data); // Récupération des valeurs
+      char* res = calcule(valeurs); // Calcul du résultat
+      char* final = writeJSON(message_type, res, false); // Création du JSON
 
-    renvoie_message(client_socket_fd, final);
+      renvoie_message(client_socket_fd, final);
 
-    free(valeurs);
-    free(res);
-    free(final);
-  }
+      free(valeurs);
+      free(res);
+      free(final);
+    }
 
-  else if (strcmp(message_type, "couleurs") == 0)
-  {
-    int nb_couleurs;
-    char* valeurs = getValeurs(data); // Récupération des valeurs
-    sscanf(valeurs, "%d", &nb_couleurs); // Récupération du nombre de couleurs
-    int nbDigit = getNbDigit(nb_couleurs) + 1; // Récupération du nombre de chiffres du nombre de couleurs
+    else if (strcmp(message_type, "couleurs") == 0)
+    {
+      int nb_couleurs;
+      char* valeurs = getValeurs(data); // Récupération des valeurs
+      sscanf(valeurs, "%d", &nb_couleurs); // Récupération du nombre de couleurs
+      int nbDigit = getNbDigit(nb_couleurs) + 1; // Récupération du nombre de chiffres du nombre de couleurs
 
-    memmove(valeurs, valeurs + nbDigit, strlen(valeurs)); // Suppression du nombre de couleurs dans les valeurs
+      memmove(valeurs, valeurs + nbDigit, strlen(valeurs)); // Suppression du nombre de couleurs dans les valeurs
 
-    enregistre_data(valeurs, "couleurs.txt");
-    plot(valeurs, nb_couleurs);    
-    renvoie_message(client_socket_fd, data);
+      enregistre_data(valeurs, "couleurs.txt");
+      plot(valeurs, nb_couleurs);    
+      renvoie_message(client_socket_fd, data);
 
-    free(valeurs);
-  }
+      free(valeurs);
+    }
 
-  else if (strcmp(message_type, "balises") == 0)
-  {
-    int nb_balises;
-    char* valeurs = getValeurs(data); // Récupération des valeurs
-    sscanf(valeurs, "%d", &nb_balises); // Récupération du nombre de balises
-    int nbDigit = getNbDigit(nb_balises) + 1; // Récupération du nombre de chiffres du nombre de balises
+    else if (strcmp(message_type, "balises") == 0)
+    {
+      int nb_balises;
+      char* valeurs = getValeurs(data); // Récupération des valeurs
+      sscanf(valeurs, "%d", &nb_balises); // Récupération du nombre de balises
+      int nbDigit = getNbDigit(nb_balises) + 1; // Récupération du nombre de chiffres du nombre de balises
 
-    memmove(valeurs, valeurs + nbDigit, strlen(valeurs)); // Suppression du nombre de balises dans les valeurs
+      memmove(valeurs, valeurs + nbDigit, strlen(valeurs)); // Suppression du nombre de balises dans les valeurs
 
-    enregistre_data(valeurs, "balises.txt");
-    renvoie_message(client_socket_fd, data);
+      enregistre_data(valeurs, "balises.txt");
+      renvoie_message(client_socket_fd, data);
 
-    free(valeurs);
+      free(valeurs);
+    }
   }
 
   free(message_type);
   return (EXIT_SUCCESS);
 }
 
+int thread_client(int client_socket_fd)
+{
+  char* nom = malloc(100 * sizeof(char));
+
+  pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+  pthread_mutex_lock(&mutex);
+  nb_clients++;
+  pthread_mutex_unlock(&mutex);
+
+  while(true)
+  {
+    recois_envoie_message(client_socket_fd, nom);
+  }
+
+  // Fermeture de la connexion avec le client
+  printf("Déconnexion du client %s\n", nom);
+  free(nom);
+
+  close(client_socket_fd);
+  pthread_mutex_lock(&mutex);
+  nb_clients--;
+  pthread_mutex_unlock(&mutex);
+
+  pthread_exit(EXIT_SUCCESS);
+  return EXIT_SUCCESS;
+}
+
 int main()
 {
   int socketfd;
   int bind_status;
-
   struct sockaddr_in server_addr;
 
   /*
@@ -205,18 +238,34 @@ int main()
 
   unsigned int client_addr_len = sizeof(client_addr);
 
-  // nouvelle connection de client
-  int client_socket_fd = accept(socketfd, (struct sockaddr *)&client_addr, &client_addr_len);
-  if (client_socket_fd < 0)
+  while(true)
   {
-    perror("accept");
-    return (EXIT_FAILURE);
-  }
+    // nouvelle connection de client
+    int client_socket_fd = accept(socketfd, (struct sockaddr *)&client_addr, &client_addr_len);
+    if (client_socket_fd < 0)
+    {
+      perror("accept");
+      return (EXIT_FAILURE);
+    }
 
-  while (1)
-  {
-    // Lire et répondre au client
-    recois_envoie_message(client_socket_fd);
+    if (nb_clients >= MAX_CLIENTS)
+    {
+      char msg[] = "Le serveur est plein !";
+      int data_size = write(client_socket_fd, (void *)msg, strlen(msg));
+      if (data_size < 0)
+      {
+        perror("erreur ecriture");
+        return (EXIT_FAILURE);
+      }
+      printf("Too many clients\n");
+      close(client_socket_fd);
+      continue;
+    }
+
+    printf("Nouveau client !\n");
+
+    pthread_t thread;
+    pthread_create(&thread, NULL, (void *)thread_client, (void *)client_socket_fd);
   }
 
   return 0;

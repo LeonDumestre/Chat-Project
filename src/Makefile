@@ -10,6 +10,9 @@ CFLAGS ?= -Wall -Wextra
 # Déboggage
 DEBUG ?= -ggdb3
 
+# Thread
+THREAD ?= -lpthread
+
 .SUFFIXES: .c .o
 
 SERVER = serveur
@@ -19,7 +22,7 @@ all: $(SERVER) $(CLIENT)
 
 # Création d'un exécutable pour le côté serveur
 $(SERVER): $(SOBJS)
-	$(CC) $(DEBUG) $(CFLAGS) -o $(SERVER) $(SOBJS)
+	$(CC) $(DEBUG) $(CFLAGS) $(THREAD) -o $(SERVER) $(SOBJS)
 
 # Création d'un exécutable pour le côté client
 $(CLIENT): $(COBJS)
@@ -27,5 +30,5 @@ $(CLIENT): $(COBJS)
 
 # Compilation du code sans création d'un exécutable
 .c.o: 
-	$(CC) $(DEBUG) $(CFLAGS) -c $*.c
+	$(CC) $(DEBUG) $(CFLAGS) $(THREAD) -c $*.c
 
