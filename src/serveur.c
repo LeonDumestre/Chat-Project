@@ -13,7 +13,7 @@
 #include "serveur.h"
 
 #define MAX_CLIENTS 5
-int nb_clients = 0;
+int NB_CLIENTS = 0;
 
 void plot(char *data, int nb_couleurs)
 {
@@ -52,7 +52,7 @@ void enregistre_data(char *data, char *pathname)
   FILE *f = fopen(pathname, "a");
   if (f == NULL)
   {
-    printf("Error opening file!\n");
+    printf("[/] erreur ouverture du fichier\n");
     exit(1);
   }
   strcat(data, "\n");
@@ -99,7 +99,7 @@ int recois_envoie_message(int client_socket_fd, char* nom)
   // Le client a fermé la connexion
   else if (data_size == 0)
   {
-    printf("Client %s deconnecté !\n", nom);
+    printf("[-] déconnexion %s\n", nom);
     return (EXIT_FAILURE);
   }
   
@@ -183,7 +183,7 @@ int thread_client(int client_socket_fd)
 
   pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
   pthread_mutex_lock(&mutex);
-  nb_clients++;
+  NB_CLIENTS++;
   pthread_mutex_unlock(&mutex);
 
   while(true)
@@ -199,7 +199,7 @@ int thread_client(int client_socket_fd)
   // Fermeture de la connexion avec le client
   close(client_socket_fd);
   pthread_mutex_lock(&mutex);
-  nb_clients--;
+  NB_CLIENTS--;
   pthread_mutex_unlock(&mutex);
 
   pthread_exit(EXIT_SUCCESS);
@@ -256,21 +256,21 @@ int main()
       return (EXIT_FAILURE);
     }
 
-    if (nb_clients >= MAX_CLIENTS)
+    if (NB_CLIENTS >= MAX_CLIENTS)
     {
-      char msg[] = "Le serveur est plein !";
+      char msg[] = "[ERREUR] Nombre de clients maximum atteint";
       int data_size = write(client_socket_fd, (void *)msg, strlen(msg));
       if (data_size < 0)
       {
         perror("erreur ecriture");
         return (EXIT_FAILURE);
       }
-      printf("Too many clients\n");
+      printf("[/] nombre max de clients atteints (5)\n");
       close(client_socket_fd);
       continue;
     }
 
-    printf("Nouveau client !\n");
+    printf("[+] nouveau client\n");
 
     pthread_t thread;
     pthread_create(&thread, NULL, (void *)thread_client, (void *)client_socket_fd);

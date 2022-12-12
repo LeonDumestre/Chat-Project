@@ -205,7 +205,7 @@ int envoie_recois_message(int socketfd)
     printf("Message recu: %s\n", data);
   }
   else {
-    printf("La commande n'est pas valide\n");
+    printf("[ERREUR] La commande n'est pas valide\n");
   }
 
   // Appel de la fonction pour envoyer un nouveau message
