@@ -9,7 +9,7 @@ contrairement aux applications client-serveur traditionnelles, nous n'enverrons 
 
 ## Travail réalisé
 
-Pour le moment nous avons réalisé l'intégralité des tâches 1 et 2 visibles ici : https://github.com/johnsamuelwrites/AlgoC/blob/master/Projet/Projet.md.
+L'intégralité des tâches du sujet de TP ont étés réalisés sont disponibles au lien suivant : https://github.com/johnsamuelwrites/AlgoC/blob/master/Projet/Projet.md
 
 ## Commandes disponibles
 
