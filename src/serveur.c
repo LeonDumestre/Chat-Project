@@ -13,7 +13,7 @@
 #include "serveur.h"
 
 #define MAX_CLIENTS 5
-int nb_clients = 0;
+int NB_CLIENTS = 0;
 
 void plot(char *data, int nb_couleurs)
 {
@@ -183,7 +183,7 @@ int thread_client(int client_socket_fd)
 
   pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
   pthread_mutex_lock(&mutex);
-  nb_clients++;
+  NB_CLIENTS++;
   pthread_mutex_unlock(&mutex);
 
   while(true)
@@ -199,7 +199,7 @@ int thread_client(int client_socket_fd)
   // Fermeture de la connexion avec le client
   close(client_socket_fd);
   pthread_mutex_lock(&mutex);
-  nb_clients--;
+  NB_CLIENTS--;
   pthread_mutex_unlock(&mutex);
 
   pthread_exit(EXIT_SUCCESS);
@@ -256,7 +256,7 @@ int main()
       return (EXIT_FAILURE);
     }
 
-    if (nb_clients >= MAX_CLIENTS)
+    if (NB_CLIENTS >= MAX_CLIENTS)
     {
       char msg[] = "[ERREUR] Nombre de clients maximum atteint";
       int data_size = write(client_socket_fd, (void *)msg, strlen(msg));
