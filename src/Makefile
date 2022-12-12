@@ -3,6 +3,7 @@ CC ?= gcc
 # Modifiez les deux lignes suivantes et ajoutez de nouveaux fichiers selon vos besoins
 COBJS ?= client.o bmp.o couleur.o json.o operations.o validation.o
 SOBJS ?= serveur.o json.o operations.o validation.o
+TOBJS ?= tests.o json.o couleur.o operations.o validation.o
 
 # Avertissements
 CFLAGS ?= -Wall -Wextra
@@ -20,8 +21,9 @@ MATH ?= -lm
 
 SERVER = serveur
 CLIENT = client
+TESTS = tests
 
-all: $(SERVER) $(CLIENT)
+all: $(SERVER) $(CLIENT) $(TESTS)
 
 # Création d'un exécutable pour le côté serveur
 $(SERVER): $(SOBJS)
@@ -31,7 +33,10 @@ $(SERVER): $(SOBJS)
 $(CLIENT): $(COBJS)
 	$(CC) $(DEBUG) $(CFLAGS) -o $(CLIENT) $(COBJS) $(MATH)
 
+# Création d'un exécutable pour les tests
+$(TESTS): $(TOBJS)
+	$(CC) $(DEBUG) $(CFLAGS) -o $(TESTS) $(TOBJS) $(MATH)
+
 # Compilation du code sans création d'un exécutable
 .c.o: 
 	$(CC) $(DEBUG) $(CFLAGS) $(THREAD) -c $*.c
-
