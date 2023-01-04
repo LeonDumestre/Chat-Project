@@ -54,6 +54,7 @@ dkms.conf
 .vscode
 client
 serveur
+tests
 
 src/couleurs.txt
 src/balises.txt
